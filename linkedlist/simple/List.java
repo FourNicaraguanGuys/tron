@@ -11,6 +11,7 @@ public class List <T> {
 
    private Node<T> head;
    private Node<T> tail;
+   private int lenght = 0;
    
    /**este metodo recibe como parametro un dato T 
     * y lo inserta en el Head de la lista simple
@@ -18,14 +19,15 @@ public class List <T> {
     * @param data
     */
    public void insertHead(T data) {
-      if (head == null) {
-          head = tail = new Node<T>(data);
-      }
-      else {
-         Node<T> tmpNode = new Node<T>(data);
-         tmpNode.setNextNode(head);
-         head = tmpNode;
-      }
+	   if (head == null) {
+		   head = tail = new Node<T>(data);
+	   }
+	   else {
+		   Node<T> tmpNode = new Node<T>(data);
+		   tmpNode.setNextNode(head);
+		   head = tmpNode;
+	   }
+	   lenght++;
    }
 
    /**este metodo recibe como parametro un dato T 
@@ -34,47 +36,50 @@ public class List <T> {
     * @param data
     */
    public void insertTail(T data) {
-      if (head == null) {
-         head = tail = new Node<T>(data);
-      }
-      else{
-         Node<T> tmpNode = new Node<>(data);
-         tail.setNextNode(tmpNode);
-         tail = tmpNode;
-      }
+	   if (head == null) {
+		   head = tail = new Node<T>(data);
+	   }
+	   else{
+		   Node<T> tmpNode = new Node<>(data);
+		   tail.setNextNode(tmpNode);
+		   tail = tmpNode;
+	   }
+	   lenght++;
    }
    
    /**
     * este medoto elimina el head de la lista
     */
    public void deleteHead() {
-      if (head != null) {
-         if (head == tail) {
-            head = tail = null;
-         }
-         else {
-            head = head.getNextNode();
-         }
-      }
+	   if (head != null) {
+		   if (head == tail) {
+			   head = tail = null;
+		   }
+		   else {
+			   head = head.getNextNode();
+		   }
+		   lenght--;
+	   }
    }
    
    /**
     * este metodo elimina el tail de la lista
     */
    public void deleteTail() {
-      if (head != null) {
-         if (head == tail) {
-            head = tail = null;
-         }
-         else {
-            Node<T> pointer = head;
-            while(pointer.getNextNode() != tail) {
-                  pointer = pointer.getNextNode();
-            }
-            pointer.setNextNode(null);
-            tail = pointer;
-         }
-      }
+	   if (head != null) {
+		   if (head == tail) {
+			   head = tail = null;
+		   }
+		   else {
+			   Node<T> pointer = head;
+			   while(pointer.getNextNode() != tail) {
+				   pointer = pointer.getNextNode();
+			   }
+			   pointer.setNextNode(null);
+			   tail = pointer;
+		   }
+		   lenght--;
+	   }
    }
    
    /**este metodo recibe como parametro un dato
@@ -88,13 +93,14 @@ public class List <T> {
 	   Node<T> pointer = head;
 	   while(pointer != null) {
 		   if (pointer.getData().equals(data)) {
+			   delete(pointer);
+			   lenght--;
 			   break;
 		   }
 		   else {
 			   pointer = pointer.getNextNode();
 		   }
 	   }          
-	   delete(pointer);
    }
    
    private void delete(Node<T> node) {
@@ -126,14 +132,13 @@ public class List <T> {
     * de cada nodo de la lista
     */
    public void print() {
-      if (head != null) {
-         Node<T> pointer = head;
-         while(pointer != null) {
-            System.out.println(pointer.getData());
-            pointer = pointer.getNextNode();
-         }
-         System.out.println("\n");
-      }
+	   if (head != null) {
+		   Node<T> pointer = head;
+		   while(pointer != null) {
+			   System.out.println(pointer.getData()+"\n");
+			   pointer = pointer.getNextNode();
+		   }
+	   }
    }
    
    public boolean exist(T data) {
@@ -167,5 +172,13 @@ public class List <T> {
 
    public Node<T> getTail() {
       return tail;
+   }
+
+   public int getLenght() {
+	   return lenght;
+   }
+
+   public void setLenght(int lenght) {
+	   this.lenght = lenght;
    }
 }

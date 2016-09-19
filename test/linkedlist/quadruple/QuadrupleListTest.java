@@ -43,5 +43,31 @@ public class QuadrupleListTest {
 		}
 		assertEquals("recorrido hacia el este",pointer.getData(),"test");
 	}
-
+	
+	@Test
+	public void testMatrixMultiplePosition() {
+		QuadrupleList<String> matrix = new QuadrupleList<String>(2,2);
+		matrix.setNodeData("1,1", 1, 1);
+		matrix.setNodeData("2,1", 2, 1);
+		matrix.setNodeData("1,2", 1, 2);
+		matrix.setNodeData("2,2", 2, 2);
+		String[] expected = {"1,1","1,2","2,1","2,2"};
+		String[] result = {matrix.getNode(1, 1).getData(),
+				matrix.getNode(1, 2).getData(),
+				matrix.getNode(2, 1).getData(),
+				matrix.getNode(2, 2).getData()};
+		assertArrayEquals(expected, result);
+	}
+	
+	/*
+	@Test
+	public void testGenerateMatrix() {
+		QuadrupleList<String> matrix = new QuadrupleList<String>(2,2);
+		matrix.setNodeData("1,1", 1, 1);
+		matrix.setNodeData("2,1", 2, 1);
+		matrix.setNodeData("1,2", 1, 2);
+		matrix.setNodeData("2,2", 2, 2);
+		System.out.println(Arrays.deepToString(matrix.generateMatrix()));
+	}
+	*/
 }

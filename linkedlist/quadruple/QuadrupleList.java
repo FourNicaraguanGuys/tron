@@ -91,7 +91,7 @@ public class QuadrupleList<T> {
 		return pointer;
 	}
 	
-	/**Obtiene el origen de una lista, es decir la posicion (0,0)
+	/**Obtiene el origen de una lista, es decir la posicion (1,1)
 	 * 
 	 * @return QuadrupleNode<T>
 	 */
@@ -99,8 +99,30 @@ public class QuadrupleList<T> {
 		return origin;
 	}
 	
+	/*
+	public Object[][] generateMatrix() {
+		Object[][] matrixArray = new Object[columns-1][rows-1];
+		QuadrupleNode<T> pointer = origin;
+		int column = 1, row = 1;
+		while(pointer != null) {
+			if(pointer.getEastNode() != null) {
+				matrixArray[column-1][row-1] = getNode(row,column).getData();
+				column++;
+				pointer = pointer.getEastNode();
+			}
+			else {
+				matrixArray[column-1][row-1] = getNode(row,column).getData();
+				column = 0;
+				row++;
+				pointer = getNode(row,column);
+			}
+		}
+		return matrixArray;
+	}
+	
+	
 	/** Metodo que define el origen de una matriz, prefireblemente
-	 * la posicion (0,0)
+	 * la posicion (1,1)
 	 * 
 	 * @param origin
 	 */
