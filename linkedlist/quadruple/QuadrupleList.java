@@ -43,10 +43,10 @@ public class QuadrupleList<T> {
 	public void setNodeData(T data, int rowPosition, int columnPosition) {
 		if (origin != null) {
 			QuadrupleNode<T> pointer = origin;
-			for (int rowIndex = 1; rowIndex < rowPosition; rowIndex++) {
+			for (int rowIndex = 1; rowIndex <= rowPosition; rowIndex++) {
 				pointer = pointer.getSouthNode();
 			}
-			for (int columnIndex = 1; columnIndex < columnPosition; columnIndex++) {
+			for (int columnIndex = 1; columnIndex <= columnPosition; columnIndex++) {
 				pointer = pointer.getEastNode();
 			}
 			pointer.setData(data);
@@ -57,10 +57,10 @@ public class QuadrupleList<T> {
 		QuadrupleNode<T> pointer = null;
 		if (origin != null) {
 			pointer = origin;
-			for (int rowIndex = 1; rowIndex < rowPosition; rowIndex++) {
+			for (int rowIndex = 1; rowIndex <= rowPosition; rowIndex++) {
 				pointer = pointer.getSouthNode();
 			}
-			for (int columnIndex = 1; columnIndex < columnPosition; columnIndex++) {
+			for (int columnIndex = 1; columnIndex <= columnPosition; columnIndex++) {
 				pointer = pointer.getEastNode();
 			}
 		}
