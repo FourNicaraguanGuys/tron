@@ -10,18 +10,38 @@ public class QuadrupleNode<T> implements Constants {
 	
 	public QuadrupleNode() {}
 	
+	/** Constructor que crea un nodo que va a contener la informacion
+	 * especificada en los argumentos
+	 * 
+	 * @param data
+	 */
 	public QuadrupleNode(T data) {
 		this.data = data;
 	}
 
+	/** Metodo que retorna los datos que contiene un nodo
+	 * 
+	 * @return data
+	 */
 	public T getData() {
 		return data;
 	}
 
+	/** Metodo que sustituye la informacion de un Nodo por la 
+	 * especificada en los argumentos
+	 * 
+	 * @param data
+	 */
 	public void setData(T data) {
 		this.data = data;
 	}
 	
+	/** Metodo que recibe como parametro la direccion la cual se desea 
+	 * obtener el siguiente nodo
+	 * 
+	 * @param direction
+	 * @return QuadrupleNode
+	 */
 	public QuadrupleNode<T> getNode(String direction) {
 		QuadrupleNode<T> node = null;
 		if (direction.equals(NORTH)) {
