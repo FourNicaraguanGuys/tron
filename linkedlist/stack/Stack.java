@@ -10,7 +10,8 @@ import linkedlist.simple.Node;
 
 public class Stack <T> {
 
-   protected Node<T> head;
+   private Node<T> head;
+   private int lenght;
    
    /**este metodo recibe como parametro un dato T 
     * y lo inserta en el Head de la lista simple
@@ -26,6 +27,7 @@ public class Stack <T> {
          tmpNode.setNextNode(head);
          head = tmpNode;
       }
+      lenght++;
    }
    
    /**
@@ -43,6 +45,7 @@ public class Stack <T> {
 			else {
 				head = head.getNextNode();
 			}
+			lenght--;
 		}
 		return data;
     }

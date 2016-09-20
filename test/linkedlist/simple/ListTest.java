@@ -29,7 +29,7 @@ public class ListTest {
 	}
 	
 	@Test
-	public void testInsertTail() {
+	public void testInsertTailNullList() {
 		List<String> list = new List<>();
 		String element = "element";
 		list.insertTail(element);

@@ -12,12 +12,13 @@ public class Queue<T> {
 	
 	private Node<T> head;
 	private Node<T> tail;
+	private int lenght;
 
-	/** This method enqueques data
+	/** This method enqueues data
 	 * 
 	 * @param data
 	 */
-	public void enqueque(T data) {
+	public void enqueue(T data) {
 	      if (head == null) {
 	         head = tail = new Node<T>(data);
 	      }
@@ -26,14 +27,15 @@ public class Queue<T> {
 	         tail.setNextNode(tmpNode);
 	         tail = tmpNode;
 	      }
+	      lenght++;
 	   }
 
-	/**This method retrun the firt data inserted then before 
-	 * elimintationg it from the queue
+	/**This method return the first data inserted then before 
+	 * eliminating it from the queue
 	 * 
 	 * @return data 
 	 */
-	public T dequeque() {
+	public T dequeue() {
 		T data = null;
 		if (head != null) {
 			data = head.getData();
@@ -43,8 +45,33 @@ public class Queue<T> {
 			else {
 				head = head.getNextNode();
 			}
+			lenght--;
+		}
+		return data;
+	}
+	
+	public T peek() {
+		T data = null;
+		if(head != null) {
+			data = head.getData();
 		}
 		return data;
 	}
 
+	public Node<T> getHead() {
+		return head;
+	}
+
+	public void setHead(Node<T> head) {
+		this.head = head;
+	}
+
+	public Node<T> getTail() {
+		return tail;
+	}
+
+	public void setTail(Node<T> tail) {
+		this.tail = tail;
+	}
+	
 }
