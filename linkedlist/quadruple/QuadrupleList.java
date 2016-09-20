@@ -99,20 +99,24 @@ public class QuadrupleList<T> {
 		return origin;
 	}
 	
-	/*
+	/** This method generates a matrix array of objects 
+	 * filled with the data of each of the quadruple list node
+	 * 
+	 * @return Object[][]
+	 */
 	public Object[][] generateMatrix() {
-		Object[][] matrixArray = new Object[columns-1][rows-1];
+		Object[][] matrixArray = new Object[columns][rows];
 		QuadrupleNode<T> pointer = origin;
 		int column = 1, row = 1;
 		while(pointer != null) {
 			if(pointer.getEastNode() != null) {
-				matrixArray[column-1][row-1] = getNode(row,column).getData();
+				matrixArray[row-1][column-1] = getNode(row,column).getData();
 				column++;
 				pointer = pointer.getEastNode();
 			}
 			else {
-				matrixArray[column-1][row-1] = getNode(row,column).getData();
-				column = 0;
+				matrixArray[row-1][column-1] = getNode(row,column).getData();
+				column = 1;
 				row++;
 				pointer = getNode(row,column);
 			}

@@ -2,6 +2,8 @@ package test.linkedlist.quadruple;
 
 import static org.junit.Assert.*;
 
+import java.util.Arrays;
+
 import org.junit.Test;
 
 import linkedlist.quadruple.QuadrupleList;
@@ -59,9 +61,9 @@ public class QuadrupleListTest {
 		assertArrayEquals(expected, result);
 	}
 	
-	/*
+	
 	@Test
-	public void testGenerateMatrix() {
+	public void testGenerateSquareMatrix() {
 		QuadrupleList<String> matrix = new QuadrupleList<String>(2,2);
 		matrix.setNodeData("1,1", 1, 1);
 		matrix.setNodeData("2,1", 2, 1);
@@ -69,5 +71,19 @@ public class QuadrupleListTest {
 		matrix.setNodeData("2,2", 2, 2);
 		System.out.println(Arrays.deepToString(matrix.generateMatrix()));
 	}
-	*/
+	
+	@Test
+	public void testGenerateCubicMatrix() {
+		QuadrupleList<String> matrix = new QuadrupleList<String>(3,3);
+		matrix.setNodeData("1,1", 1, 1);
+		matrix.setNodeData("1,2", 1, 2);
+		matrix.setNodeData("2,1", 2, 1);
+		matrix.setNodeData("2,2", 2, 2);
+		matrix.setNodeData("2,3", 2, 3);
+		matrix.setNodeData("3,1", 3, 1);
+		matrix.setNodeData("3,2", 3, 2);
+		matrix.setNodeData("3,3", 3, 3);
+		System.out.println(Arrays.deepToString(matrix.generateMatrix()));
+	}
+	
 }
