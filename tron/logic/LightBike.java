@@ -61,6 +61,8 @@ public class LightBike extends Element implements Constants {
 			}
 			else {
 				destroyBike();
+				//spreadItems();
+				//spreadPowerUps();
 			}
 		}	
 	}
