@@ -105,7 +105,7 @@ public class QuadrupleList<T> {
 	 * @return Object[][]
 	 */
 	public Object[][] generateMatrix() {
-		Object[][] matrixArray = new Object[columns][rows];
+		Object[][] matrixArray = new Object[rows][columns];
 		QuadrupleNode<T> pointer = origin;
 		int column = 1, row = 1;
 		while(pointer != null) {

@@ -9,5 +9,8 @@ public interface Constants {
 	
 	public static final String BIKE = "bike";
 	public static final String TRAIL = "trail";
+	
+	public static final int INITIAL_TRAIL_LENGHT = 3;
+	public static final float FUEL_CONSUMPTION_RATE = 0.2f;
 
 }

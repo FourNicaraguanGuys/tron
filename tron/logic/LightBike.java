@@ -4,17 +4,37 @@ import linkedlist.quadruple.QuadrupleNode;
 import linkedlist.simple.List;
 import linkedlist.simple.Node;
 
-public class LightBike extends Element {
+public class LightBike extends Element implements Constants {
 	
 	private int id;
 	private Boolean active;
+	private int speed;
+	private float fuel;
 	private String direction;
 	private List<LightTrail> trailList;
 	
-	public LightBike(int id, String direction, int trailLenght) {
+	public LightBike(QuadrupleNode<Element> matrixPosition, int id) {
+		this.type = BIKE;
+		this.matrixPosition = matrixPosition;
+		
 		this.id = id;
-		this.direction = direction;
 		this.active = true;
+		//speed random
+		//fuel random
+		// direction random
+		createTrail(INITIAL_TRAIL_LENGHT);
+	}
+	
+	public LightBike(QuadrupleNode<Element> matrixPosition, int id, 
+			int speed, float fuel, String direction, int trailLenght) {
+		this.type = BIKE;
+		this.matrixPosition = matrixPosition;
+		
+		this.id = id;
+		this.active = true;
+		this.speed = speed;
+		this.fuel = fuel;
+		this.direction = direction;
 		createTrail(trailLenght);
 	}
 
@@ -34,17 +54,21 @@ public class LightBike extends Element {
 	}
 	 
 	public void move() {
-		if (ableToMove()) {
-			moveBikeAndTrail();
-		}
-		else {
-			destroyBike();
-		}
+		for(int counter = 0; counter < speed; counter++) {
+			if (ableToMove()) {
+				moveBikeAndTrail();
+				consumeFuel();
+			}
+			else {
+				destroyBike();
+			}
+		}	
 	}
 
 	private boolean ableToMove() {
 		return (matrixPosition.getNode(direction) != null &&
-				matrixPosition.getNode(direction).getData() == null);
+				matrixPosition.getNode(direction).getData() == null &&
+				fuel > 0);
 	}
 	 
 	private void moveBikeAndTrail() {
@@ -64,6 +88,10 @@ public class LightBike extends Element {
 			nodePointer = nodePointer.getNextNode();
 		}	
 		
+	}
+	
+	private void consumeFuel() {
+		fuel -= FUEL_CONSUMPTION_RATE;
 	}
 	 
 	private void destroyBike() {
@@ -123,6 +151,14 @@ public class LightBike extends Element {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+	
+	public int getSpeed() {
+		return speed;
+	}
+
+	public void setSpeed(int speed) {
+		this.speed = speed;
 	}
 	 	
 }
