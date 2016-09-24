@@ -7,6 +7,11 @@ public class Element implements Constants {
 	protected String type;
 	protected QuadrupleNode<Element> matrixPosition;
 	
+	public Element(String type, QuadrupleNode<Element> matrixPosition) {
+		this.type = type;
+		this.matrixPosition = matrixPosition;
+	}
+	
 	public String getType() {
 		return type;
 	}

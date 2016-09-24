@@ -7,8 +7,10 @@ public class LightTrail extends Element {
 	private int id;
 	
 	public LightTrail(int id, QuadrupleNode<Element> matrixPosition) {
+		
+		super(TRAIL,matrixPosition);
 		this.id = id;
-		this.matrixPosition = matrixPosition;
+		
 	}
 
 	public int getId() {

@@ -1,10 +1,13 @@
 package tron.logic;
 
 import linkedlist.quadruple.QuadrupleNode;
+import linkedlist.queue.Queue;
 import linkedlist.simple.List;
 import linkedlist.simple.Node;
+import linkedlist.stack.Stack;
+import tron.misc.RandomGenerator;
 
-public class LightBike extends Element implements Constants {
+public class LightBike extends Element {
 	
 	private int id;
 	private Boolean active;
@@ -12,14 +15,18 @@ public class LightBike extends Element implements Constants {
 	private float fuel;
 	private String direction;
 	private List<LightTrail> trailList;
+	private Queue<Element> itemQueue;
+	private Stack<Element> powerUpStack;
+	//gameCoordinator
 	
 	public LightBike(QuadrupleNode<Element> matrixPosition, int id) {
-		this.type = BIKE;
-		this.matrixPosition = matrixPosition;
+		
+		super(BIKE,matrixPosition);
 		
 		this.id = id;
 		this.active = true;
-		//speed random
+		this.speed = RandomGenerator.nextInt(MINIMUM_SPEED,MAXIMUM_SPEED);
+		this.fuel = RandomGenerator.nextFloat(MINIMUM_FUEL,MAXIMUM_FUEL);
 		//fuel random
 		// direction random
 		createTrail(INITIAL_TRAIL_LENGHT);
@@ -27,8 +34,8 @@ public class LightBike extends Element implements Constants {
 	
 	public LightBike(QuadrupleNode<Element> matrixPosition, int id, 
 			int speed, float fuel, String direction, int trailLenght) {
-		this.type = BIKE;
-		this.matrixPosition = matrixPosition;
+		
+		super(BIKE,matrixPosition);
 		
 		this.id = id;
 		this.active = true;
@@ -55,41 +62,92 @@ public class LightBike extends Element implements Constants {
 	 
 	public void move() {
 		for(int counter = 0; counter < speed; counter++) {
-			if (ableToMove()) {
-				moveBikeAndTrail();
-				consumeFuel();
-			}
-			else {
+			
+			if(outOfBounds() || unableToMove() || outOfFuel()) {
 				destroyBike();
+				//informGameCoordinator
 				//spreadItems();
 				//spreadPowerUps();
 			}
+			else {
+				collectUpgradesInPath();
+				moveBikeAndTrail();
+				consumeFuel();
+			}
 		}	
 	}
+	
+	private boolean outOfBounds() {
+		return matrixPosition.getNode(direction) == null;
+	}
 
-	private boolean ableToMove() {
-		return (matrixPosition.getNode(direction) != null &&
-				matrixPosition.getNode(direction).getData() == null &&
-				fuel > 0);
+	private boolean unableToMove() {
+		boolean result = false;
+		if (matrixPosition.getNode(direction).getData() != null) {
+			result = (matrixPosition.getNode(direction).getData().getType() == MINE ||
+					matrixPosition.getNode(direction).getData().getType() == BIKE ||
+					matrixPosition.getNode(direction).getData().getType() == TRAIL); 
+		}
+		return result;
+	}
+	
+	private boolean outOfFuel() {
+		return (fuel <= 0);
+	}
+	
+	private void collectUpgradesInPath() {
+		if(matrixPosition.getNode(direction).getData() != null) {
+			if(matrixPosition.getNode(direction).getData().getType() == FUEL_CELL) {
+				itemQueue.enqueue(matrixPosition.getNode(direction).getData());
+				matrixPosition.getNode(direction).getData().setMatrixPosition(null);
+				increaseFuel();
+			}
+			else if(matrixPosition.getNode(direction).getData().getType() == SHIELD) {
+				powerUpStack.push(matrixPosition.getNode(direction).getData());
+				matrixPosition.getNode(direction).getData().setMatrixPosition(null);
+			}
+			else if(matrixPosition.getNode(direction).getData().getType() == HYPER_SPEED) {
+				powerUpStack.push(matrixPosition.getNode(direction).getData());
+				matrixPosition.getNode(direction).getData().setMatrixPosition(null);
+			}
+		}
+	}
+	
+	private void increaseFuel() {
+		fuel += RandomGenerator.nextInt(MINIMUM_FUEL, MAXIMUM_FUEL);
 	}
 	 
 	private void moveBikeAndTrail() {
 		
-		QuadrupleNode<Element> lightTrailNextMatrixPosition = matrixPosition;
+		if(matrixPosition.getNode(direction).getData() != null && 
+				matrixPosition.getNode(direction).getData().getType() == TRAIL_UPGRADE){
+			itemQueue.enqueue(matrixPosition.getNode(direction).getData());
+			matrixPosition.getNode(direction).getData().setMatrixPosition(null);
 		
-		matrixPosition = matrixPosition.getNode(direction);
-		
-		Node<LightTrail> nodePointer = trailList.getHead();
-		QuadrupleNode<Element> lightTrailCurrentMatrixPosition = null;
-		
-		while(nodePointer != null) {
-			lightTrailCurrentMatrixPosition = nodePointer.getData().getMatrixPosition();
-			nodePointer.getData().setMatrixPosition(lightTrailNextMatrixPosition);
-			lightTrailNextMatrixPosition = lightTrailCurrentMatrixPosition;
+			QuadrupleNode<Element> lightTrailNextMatrixPosition = matrixPosition;
 			
-			nodePointer = nodePointer.getNextNode();
-		}	
+			matrixPosition = matrixPosition.getNode(direction);
+			
+			LightTrail lightTrail = new LightTrail(id, lightTrailNextMatrixPosition);
+			trailList.insertHead(lightTrail);
+
+		} else {
 		
+			QuadrupleNode<Element> lightTrailNextMatrixPosition = matrixPosition;
+		
+			matrixPosition = matrixPosition.getNode(direction);
+		
+			Node<LightTrail> nodePointer = trailList.getHead();
+			QuadrupleNode<Element> lightTrailCurrentMatrixPosition = null;
+		
+			while(nodePointer != null) {
+				lightTrailCurrentMatrixPosition = nodePointer.getData().getMatrixPosition();
+				nodePointer.getData().setMatrixPosition(lightTrailNextMatrixPosition);
+				lightTrailNextMatrixPosition = lightTrailCurrentMatrixPosition;
+			
+				nodePointer = nodePointer.getNextNode();
+			}	
+		}
 	}
 	
 	private void consumeFuel() {
@@ -161,6 +219,30 @@ public class LightBike extends Element implements Constants {
 
 	public void setSpeed(int speed) {
 		this.speed = speed;
+	}
+
+	public float getFuel() {
+		return fuel;
+	}
+
+	public void setFuel(float fuel) {
+		this.fuel = fuel;
+	}
+
+	public Queue<Element> getItemQueue() {
+		return itemQueue;
+	}
+
+	public void setItemQueue(Queue<Element> itemQueue) {
+		this.itemQueue = itemQueue;
+	}
+
+	public Stack<Element> getPowerUpStack() {
+		return powerUpStack;
+	}
+
+	public void setPowerUpStack(Stack<Element> powerUpStack) {
+		this.powerUpStack = powerUpStack;
 	}
 	 	
 }
