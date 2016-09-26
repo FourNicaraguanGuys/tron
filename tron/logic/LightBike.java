@@ -17,6 +17,7 @@ public class LightBike extends Element {
 	private List<LightTrail> trailList;
 	private Queue<Element> itemQueue;
 	private Stack<Element> powerUpStack;
+	//private Boolean shield;
 	//gameCoordinator
 	
 	public LightBike(QuadrupleNode<Element> matrixPosition, int id) {
@@ -27,8 +28,7 @@ public class LightBike extends Element {
 		this.active = true;
 		this.speed = RandomGenerator.nextInt(MINIMUM_SPEED,MAXIMUM_SPEED);
 		this.fuel = RandomGenerator.nextFloat(MINIMUM_FUEL,MAXIMUM_FUEL);
-		//fuel random
-		// direction random
+		this.direction = getRandomDirection();
 		createTrail(INITIAL_TRAIL_LENGHT);
 	}
 	
@@ -51,9 +51,9 @@ public class LightBike extends Element {
 		QuadrupleNode<Element> matrixPointer = matrixPosition.getNode(getOppositeDirection());
 		
 		for (int counter = 0; counter < trailLenght; counter++) {
-			LightTrail lightTrail = new LightTrail(id,matrixPointer);
+			LightTrail lightTrail = new LightTrail(id, matrixPointer);
 			newTrailList.insertTail(lightTrail);
-			
+
 			matrixPointer = matrixPointer.getNode(getOppositeDirection());
 		}
 		trailList =  newTrailList;
@@ -63,8 +63,9 @@ public class LightBike extends Element {
 	public void move() {
 		for(int counter = 0; counter < speed; counter++) {
 			
-			if(outOfBounds() || unableToMove() || outOfFuel()) {
+			if(outOfBounds() || unableToMove() || mineInPath() || outOfFuel() || bikeCollision()) {
 				destroyBike();
+				break;
 				//informGameCoordinator
 				//spreadItems();
 				//spreadPowerUps();
@@ -78,15 +79,21 @@ public class LightBike extends Element {
 	}
 	
 	private boolean outOfBounds() {
-		return matrixPosition.getNode(direction) == null;
+		return getNextMatrixPosition() == null;
 	}
 
-	private boolean unableToMove() {
+	private boolean unableToMove() {		
+		return(getNextMatrixPositionData() != null &&
+				getNextMatrixPositionData().getType() == TRAIL); 
+		//chequear escudo
+	}
+	
+	private boolean mineInPath() {
 		boolean result = false;
-		if (matrixPosition.getNode(direction).getData() != null) {
-			result = (matrixPosition.getNode(direction).getData().getType() == MINE ||
-					matrixPosition.getNode(direction).getData().getType() == BIKE ||
-					matrixPosition.getNode(direction).getData().getType() == TRAIL); 
+		if (getNextMatrixPositionData() != null && 
+				getNextMatrixPositionData().getType() == MINE) {
+			getNextMatrixPositionData().setMatrixPosition(null);
+			result = true;
 		}
 		return result;
 	}
@@ -95,22 +102,28 @@ public class LightBike extends Element {
 		return (fuel <= 0);
 	}
 	
+	private boolean bikeCollision() {
+		return getNextMatrixPositionData() != null &&
+				getNextMatrixPositionData().getType() == BIKE;
+	}
+	
 	private void collectUpgradesInPath() {
-		if(matrixPosition.getNode(direction).getData() != null) {
-			if(matrixPosition.getNode(direction).getData().getType() == FUEL_CELL) {
-				itemQueue.enqueue(matrixPosition.getNode(direction).getData());
-				matrixPosition.getNode(direction).getData().setMatrixPosition(null);
-				increaseFuel();
-			}
-			else if(matrixPosition.getNode(direction).getData().getType() == SHIELD) {
-				powerUpStack.push(matrixPosition.getNode(direction).getData());
-				matrixPosition.getNode(direction).getData().setMatrixPosition(null);
-			}
-			else if(matrixPosition.getNode(direction).getData().getType() == HYPER_SPEED) {
-				powerUpStack.push(matrixPosition.getNode(direction).getData());
-				matrixPosition.getNode(direction).getData().setMatrixPosition(null);
-			}
+		if(getNextMatrixPositionData() != null &&
+				getNextMatrixPositionData().getType() == FUEL_CELL) {
+			itemQueue.enqueue(getNextMatrixPositionData());
+			getNextMatrixPositionData().setMatrixPosition(null);
+			increaseFuel();
 		}
+		else if(getNextMatrixPositionData() != null &&
+				getNextMatrixPositionData().getType() == SHIELD) {
+			powerUpStack.push(getNextMatrixPositionData());
+			getNextMatrixPositionData().setMatrixPosition(null);
+		}
+		else if(getNextMatrixPositionData() != null &&
+				getNextMatrixPositionData().getType() == HYPER_SPEED) {
+			powerUpStack.push(getNextMatrixPositionData());
+			getNextMatrixPositionData().setMatrixPosition(null);
+		}	
 	}
 	
 	private void increaseFuel() {
@@ -119,23 +132,24 @@ public class LightBike extends Element {
 	 
 	private void moveBikeAndTrail() {
 		
-		if(matrixPosition.getNode(direction).getData() != null && 
-				matrixPosition.getNode(direction).getData().getType() == TRAIL_UPGRADE){
-			itemQueue.enqueue(matrixPosition.getNode(direction).getData());
-			matrixPosition.getNode(direction).getData().setMatrixPosition(null);
+		if(getNextMatrixPositionData() != null &&
+				getNextMatrixPositionData().getType() == TRAIL_UPGRADE){
+			
+			itemQueue.enqueue(getNextMatrixPositionData());
+			getNextMatrixPositionData().setMatrixPosition(null);
 		
-			QuadrupleNode<Element> lightTrailNextMatrixPosition = matrixPosition;
+			QuadrupleNode<Element> lightBikePreviousPosition = matrixPosition;
 			
-			matrixPosition = matrixPosition.getNode(direction);
+			setMatrixPosition(getNextMatrixPosition());
 			
-			LightTrail lightTrail = new LightTrail(id, lightTrailNextMatrixPosition);
+			LightTrail lightTrail = new LightTrail(id, lightBikePreviousPosition);
 			trailList.insertHead(lightTrail);
 
 		} else {
 		
 			QuadrupleNode<Element> lightTrailNextMatrixPosition = matrixPosition;
 		
-			matrixPosition = matrixPosition.getNode(direction);
+			setMatrixPosition(getNextMatrixPosition());
 		
 			Node<LightTrail> nodePointer = trailList.getHead();
 			QuadrupleNode<Element> lightTrailCurrentMatrixPosition = null;
@@ -144,7 +158,7 @@ public class LightBike extends Element {
 				lightTrailCurrentMatrixPosition = nodePointer.getData().getMatrixPosition();
 				nodePointer.getData().setMatrixPosition(lightTrailNextMatrixPosition);
 				lightTrailNextMatrixPosition = lightTrailCurrentMatrixPosition;
-			
+				
 				nodePointer = nodePointer.getNextNode();
 			}	
 		}
@@ -154,12 +168,12 @@ public class LightBike extends Element {
 		fuel -= FUEL_CONSUMPTION_RATE;
 	}
 	 
-	private void destroyBike() {
+	public void destroyBike() {
 		active = false;
-		matrixPosition.setData(null);
+		setMatrixPosition(null);
 		Node<LightTrail> nodePointer = trailList.getHead();
 		while(nodePointer != null) {
-			nodePointer.getData().getMatrixPosition().setData(null);
+			nodePointer.getData().setMatrixPosition(null);
 			nodePointer = nodePointer.getNextNode();
 		}	
 	}
@@ -177,6 +191,29 @@ public class LightBike extends Element {
 		}
 		else {
 			orientation = EAST;
+		}
+		return orientation;
+	}
+	
+	private QuadrupleNode<Element> getNextMatrixPosition() {
+		return matrixPosition.getNode(direction);
+	}
+	
+	private Element getNextMatrixPositionData() {
+		return matrixPosition.getNode(direction).getData();
+	}
+	
+	private String getRandomDirection() {
+		int number = RandomGenerator.nextInt(1,4);
+		String orientation = null;
+		if(number == 1) {
+			orientation = NORTH;
+		} else if(number == 2) {
+			orientation = EAST;
+		} else if(number == 3) {
+			orientation = SOUTH;
+		} else {
+			orientation = WEST;
 		}
 		return orientation;
 	}

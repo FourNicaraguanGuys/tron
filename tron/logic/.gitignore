@@ -5,3 +5,5 @@
 /PowerUp.class
 /Item.class
 /GameCoordinator.class
+/BikeFactory.class
+/UpgradesFactory.class
