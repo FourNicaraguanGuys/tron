@@ -17,9 +17,12 @@ public class LightBike extends Element {
 	private List<LightTrail> trailList;
 	private Queue<Element> itemQueue;
 	private Stack<Element> powerUpStack;
+	private Boolean shield;
 	//private Boolean shield;
 	//gameCoordinator
 	
+
+
 	public LightBike(QuadrupleNode<Element> matrixPosition, int id) {
 		
 		super(BIKE,matrixPosition);
@@ -63,7 +66,7 @@ public class LightBike extends Element {
 	public void move() {
 		for(int counter = 0; counter < speed; counter++) {
 			
-			if(outOfBounds() || unableToMove() || mineInPath() || outOfFuel() || bikeCollision()) {
+			if(outOfBounds() || bikeCollision() || mineInPath() || unableToMove() || outOfFuel() ) {
 				destroyBike();
 				break;
 				//informGameCoordinator
@@ -74,6 +77,7 @@ public class LightBike extends Element {
 				collectUpgradesInPath();
 				moveBikeAndTrail();
 				consumeFuel();
+				//checkShield
 			}
 		}	
 	}
@@ -82,10 +86,21 @@ public class LightBike extends Element {
 		return getNextMatrixPosition() == null;
 	}
 
-	private boolean unableToMove() {		
+	private boolean unableToMove() {	
+		Boolean unableToMove = false;
+		if(getNextMatrixPositionData() != null &&
+				getNextMatrixPositionData().getType() == TRAIL) {
+			if(getShield()) {
+				//eliminar escudo del stack
+				//shield = false
+			}
+			else {
+				unableToMove = true;
+			}
+			return unableToMove;
+		}
 		return(getNextMatrixPositionData() != null &&
 				getNextMatrixPositionData().getType() == TRAIL); 
-		//chequear escudo
 	}
 	
 	private boolean mineInPath() {
@@ -280,6 +295,14 @@ public class LightBike extends Element {
 
 	public void setPowerUpStack(Stack<Element> powerUpStack) {
 		this.powerUpStack = powerUpStack;
+	}
+
+	public Boolean getShield() {
+		return shield;
+	}
+
+	public void setShield(Boolean shield) {
+		this.shield = shield;
 	}
 	 	
 }

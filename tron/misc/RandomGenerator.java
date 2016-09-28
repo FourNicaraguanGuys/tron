@@ -34,4 +34,14 @@ public class RandomGenerator {
 	    return randomNum;
 	}
 	
+	public static boolean porcentageChance(int winPorcentage) {
+		Random rand = new Random(); 
+	    Boolean result = false;
+		int randomNum = rand.nextInt(101);
+		if(randomNum <= winPorcentage) {
+			result = true;
+		}
+	    return result;
+	}
+	
 }

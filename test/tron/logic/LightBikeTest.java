@@ -38,5 +38,21 @@ public class LightBikeTest {
 		lightBike.move();
 		assertFalse(lightBike.isActive());
 	}
+	
+	@Test
+	public void testOutOfBounds() {
+		QuadrupleList<Element> matrix = new QuadrupleList<>(5,5);
+		LightBike lightBike = new LightBike(matrix.getNode(5, 5), 1, 1 ,1,"east",3);
+		lightBike.move();
+		assertFalse(lightBike.isActive());
+	}
+	
+	@Test
+	public void testOutOfFuel() {
+		QuadrupleList<Element> matrix = new QuadrupleList<>(15,15);
+		LightBike lightBike = new LightBike(matrix.getNode(5, 5), 1, 10 ,1,"east",3);
+		lightBike.move();
+		assertFalse(lightBike.isActive());
+	}
 
 }
