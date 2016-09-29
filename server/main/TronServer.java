@@ -7,7 +7,9 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import org.json.simple.JSONArray;
-import org.json.simple.parser.ParseException;
+
+
+import linkedlist.simple.List;
 import server.serverJson.ServerJson;
 
 
@@ -17,11 +19,13 @@ public class TronServer {
     private static final int PORT = 9001;
     static ServerJson serverJson = new ServerJson();
     static JSONArray JAMain;
+    static List<PrintWriter> listPrintWriter = new List<PrintWriter>();
+    static List<String> listbikeID = new List<String>();
+    
 
     public static void main(String[] args) throws Exception {
-    	System.out.println("The chat server is running.");
+    	System.out.println("manu");
         ServerSocket listener = new ServerSocket(PORT);
-        System.out.println("The chat server is running.");
         try {
             while (true) {
                 new Handler(listener.accept()).start();
@@ -35,14 +39,11 @@ public class TronServer {
         private Socket socket;
         private BufferedReader in;
         private PrintWriter out;
-       
-       
-
+        private String name;
 
         public Handler(Socket socket) {
             this.socket = socket;
         }
-
 
         public void run() {
             try {
@@ -51,18 +52,23 @@ public class TronServer {
                 in = new BufferedReader(new InputStreamReader(
                     socket.getInputStream()));
                 out = new PrintWriter(socket.getOutputStream(), true);
+                listPrintWriter.insertHead(out);
              
                 while (true) {
-                    Jstring = in.readLine();
-                    JSONArray js = serverJson.encodeJArray(serverJson.decodeJArray(Jstring));
-                    if (js.get(0)!= null && js.get(1) != null){
-                    	Integer r = (Integer) js.get(0);
-                    	Integer c = (Integer) js.get(1);
-                    	JAMain = serverJson.createJson(r, c);
-                    	System.out.println(JAMain);
-                    	out.print(JAMain);
-                    	break;
-                    } 
+                	System.out.println("entró");
+                	if (listbikeID.getHead() == null){
+                		Jstring = in.readLine();
+                		if (Jstring!= null){
+                			Integer r = (Integer) serverJson.decodeJRow(Jstring);
+                			Integer c = (Integer) serverJson.decodeJColumn(Jstring);
+                			JAMain = serverJson.createJson(r, c); //generate matrix
+                			System.out.println(JAMain); 
+                			out.print(JAMain);
+                			break;
+                		}
+                	}else{
+                		break; 
+                	}
                 }
                
                 while (true) {
@@ -70,17 +76,43 @@ public class TronServer {
                     if (input == null) {
                         return;
                     }else{
-                    	String name = serverJson.decodeJSPlayer(input);
+                    	String[] keyArray = new String[4];
+                    	name = serverJson.decodeJSPlayer(input);
                     	String key = serverJson.decodeJSKey(input);
-                    	System.out.println("Jugador: " + name + " apretó " + key );
+                    	if (listbikeID.exist(name)){
+                    		if (name.equals("bike1")){
+                    			keyArray[0] = key;
+                    		}else if(name.equals("bike2")){
+                    			keyArray[1] = key;
+                    		}else if(name.equals("bike3")){
+                    			keyArray[2] = key;
+                    		}else if (name.equals("bike4")){
+                    			keyArray[3] = key;
+                    		}
+                    	}else{
+                    		listbikeID.insertTail(name);
+                    		if (name.equals("bike1")){
+                    			keyArray[0] = key;
+                    		}else if(name.equals("bike2")){
+                    			keyArray[1] = key;
+                    		}else if(name.equals("bike3")){
+                    			keyArray[2] = key;
+                    		}else if (name.equals("bike4")){
+                    			keyArray[3] = key;
+                    		}
+                    	}
+                    	/** Logic.modifyDireccion(keyArray);
+                    	logic.update();
+                    	String[][] matrixShared = logic.getMatrix();
+                    	JAMain = serverJson.encodeJArray(matrixShared);
+                    	for (PrintWriter writer : listPrintWriter){
+                    		writer.println(JAMain);
+                    	}*/
                     }
                 }
             } catch (IOException e) {
                 System.out.println(e);
-            } catch (ParseException e) {
-    			e.printStackTrace();
-    		} finally {
-                
+            } finally {
                 try {
                     socket.close();
                 } catch (IOException e) {

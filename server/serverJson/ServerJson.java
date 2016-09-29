@@ -92,5 +92,35 @@ public class ServerJson {
 	        }      
 	    return state;
 	}
+	public int decodeJRow(String JString){
+		JSONParser parser = new JSONParser();
+		int state = -1;   
+	    try {  
+	         
+	       Object obj = parser.parse(JString);       
+	       JSONObject jsonObject = (JSONObject) obj;  
+	         
+	       state = (int) jsonObject.get("Row");
+	         
+	       } catch (ParseException e) {  
+	         e.printStackTrace();  
+	        }      
+	    return state;
+	}
+	public int decodeJColumn(String JString){
+		JSONParser parser = new JSONParser();
+	    int state = -1;    
+	    try {  
+	         
+	       Object obj = parser.parse(JString);       
+	       JSONObject jsonObject = (JSONObject) obj;  
+	         
+	       state = (int) jsonObject.get("column");
+	         
+	       } catch (ParseException e) {  
+	         e.printStackTrace();  
+	        }      
+	    return state;
+	}
 	
 }
