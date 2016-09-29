@@ -3,3 +3,8 @@
 /LightBike.class
 /LightTrail.class
 /PowerUp.class
+/Item.class
+/GameCoordinator.class
+/BikeFactory.class
+/UpgradesFactory.class
+/Logic.class
