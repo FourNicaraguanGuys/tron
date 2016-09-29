@@ -7,6 +7,9 @@ public interface Constants {
 	public static final String SOUTH = "south";
 	public static final String WEST = "west";
 	
+	public static final String LEFT = "left";
+	public static final String RIGHT = "right";
+	
 	public static final String BIKE = "bike";
 	public static final String TRAIL = "trail";
 	

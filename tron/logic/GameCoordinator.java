@@ -6,7 +6,7 @@ import linkedlist.simple.List;
 import linkedlist.simple.Node;
 import tron.misc.RandomGenerator;
 
-public class GameCoordinator implements Constants {
+public class GameCoordinator implements Logic, Constants {
 	
 	private boolean gameOver;
 	private QuadrupleList<Element> matrix;
@@ -14,13 +14,19 @@ public class GameCoordinator implements Constants {
 	
 	public GameCoordinator(int matrixNumberOfRows, int matrixNumberOfColumns) {
 		this.matrix = new QuadrupleList<Element>(matrixNumberOfRows,matrixNumberOfColumns);
-		this.bikesList = generateBikeList(2);
+		this.bikesList = generateBikeList(2); //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 	}
 	
-	public List<LightBike> generateBikeList(int numberOfBikes) {
+	public GameCoordinator() {
+		
+	}
+	
+	
+	
+	private List<LightBike> generateBikeList(int numberOfBikes) {
 		List<LightBike> lightBikeList = new List<>();
 		for(int counter = 0; counter < numberOfBikes; counter++) {
-			lightBikeList.insertTail(new LightBike(randomBikeMatrixPosition(),counter+1));
+			lightBikeList.insertTail(new LightBike(randomBikeMatrixPosition(),counter+1,this.matrix));
 		}
 		return lightBikeList;
 	}
@@ -36,6 +42,17 @@ public class GameCoordinator implements Constants {
 				}
 			}
 		return randomMatrixPosition;
+	}
+	
+	@Override
+	public void modifyDirections(List<String> list) {
+		Node<String> directionNode = list.getHead();
+		Node<LightBike> bikeNode = bikesList.getHead();
+		while(directionNode != null) {
+			bikeNode.getData().modifyDirection(directionNode.getData());
+			directionNode = directionNode.getNextNode();
+			bikeNode = bikeNode.getNextNode();
+		}
 	}
 
 	private QuadrupleNode<Element> randomBikeMatrixPosition() {
@@ -106,8 +123,26 @@ public class GameCoordinator implements Constants {
 		this.gameOver = gameOver;
 	}
 
-	public void generateMatrix() {
-		
+	public String[][] generateMatrix() {
+		Element[][] elementMatrix = (Element[][])matrix.generateMatrix();
+		String[][] stringMatrix = new String[matrix.getRows()][matrix.getColumns()];
+		for(int row = 0; row < matrix.getRows()-1; row++) {
+			for(int column = 0; column < matrix.getColumns()-1; column++) {
+				Element currentElement = elementMatrix[row][column];
+				if(currentElement != null) {
+					if(currentElement.getType() == BIKE) {
+						stringMatrix[row][column] = currentElement.getType() + 
+								((LightBike)currentElement).getId();
+					} else if (currentElement.getType() == TRAIL) {
+						stringMatrix[row][column] = currentElement.getType() + 
+								((LightTrail)currentElement).getId();
+					} else {
+						stringMatrix[row][column] = currentElement.getType();
+					}
+				}	
+			} 
+		}	
+		return stringMatrix;
 	}
 
 	public boolean isGameOver() {

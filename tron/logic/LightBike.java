@@ -1,5 +1,6 @@
 package tron.logic;
 
+import linkedlist.quadruple.QuadrupleList;
 import linkedlist.quadruple.QuadrupleNode;
 import linkedlist.queue.Queue;
 import linkedlist.simple.List;
@@ -9,77 +10,105 @@ import tron.misc.RandomGenerator;
 
 public class LightBike extends Element {
 	
-	private int id;
 	private Boolean active;
+	private int id;
+	private QuadrupleList<Element> matrix;
+	
 	private int speed;
 	private float fuel;
 	private String direction;
 	private List<LightTrail> trailList;
-	private Queue<Element> itemQueue;
-	private Stack<Element> powerUpStack;
-	private Boolean shield;
-	//private Boolean shield;
-	//gameCoordinator
 	
+	private Queue<Element> itemQueue;
+	private Stack<Element> shieldStack;
 
-
-	public LightBike(QuadrupleNode<Element> matrixPosition, int id) {
-		
+	public LightBike(QuadrupleNode<Element> matrixPosition, int id, QuadrupleList<Element> matrix) {
 		super(BIKE,matrixPosition);
-		
 		this.id = id;
 		this.active = true;
+		this.setMatrix(matrix);
 		this.speed = RandomGenerator.nextInt(MINIMUM_SPEED,MAXIMUM_SPEED);
 		this.fuel = RandomGenerator.nextFloat(MINIMUM_FUEL,MAXIMUM_FUEL);
 		this.direction = getRandomDirection();
+		this.itemQueue = new Queue<Element>();
+		this.shieldStack = new Stack<Element>();
 		createTrail(INITIAL_TRAIL_LENGHT);
 	}
 	
 	public LightBike(QuadrupleNode<Element> matrixPosition, int id, 
-			int speed, float fuel, String direction, int trailLenght) {
-		
+			QuadrupleList<Element> matrix, int speed, float fuel,
+			String direction, int trailLenght) {
 		super(BIKE,matrixPosition);
-		
 		this.id = id;
 		this.active = true;
+		this.setMatrix(matrix);
 		this.speed = speed;
 		this.fuel = fuel;
 		this.direction = direction;
+		this.itemQueue = new Queue<Element>();
+		this.shieldStack = new Stack<Element>();
 		createTrail(trailLenght);
 	}
 
 	private void createTrail(int trailLenght) {
-		
 		List<LightTrail> newTrailList = new List<LightTrail>();
 		QuadrupleNode<Element> matrixPointer = matrixPosition.getNode(getOppositeDirection());
-		
 		for (int counter = 0; counter < trailLenght; counter++) {
 			LightTrail lightTrail = new LightTrail(id, matrixPointer);
 			newTrailList.insertTail(lightTrail);
-
 			matrixPointer = matrixPointer.getNode(getOppositeDirection());
 		}
 		trailList =  newTrailList;
-		
 	}
 	 
 	public void move() {
 		for(int counter = 0; counter < speed; counter++) {
-			
 			if(outOfBounds() || bikeCollision() || mineInPath() || unableToMove() || outOfFuel() ) {
 				destroyBike();
-				break;
-				//informGameCoordinator
 				//spreadItems();
 				//spreadPowerUps();
+				break;
+
 			}
 			else {
 				collectUpgradesInPath();
 				moveBikeAndTrail();
-				consumeFuel();
-				//checkShield
+				consumeFuel(); 
 			}
 		}	
+	}
+	
+	public void modifyDirection(String direction) {
+		 if(direction.equals(RIGHT)) {
+			 moveRight(); 
+		 }
+		 else if(direction.equals(LEFT)) {
+			 moveLeft();
+		 }
+	}
+	
+	private void moveRight() {
+		if(this.direction.equals(NORTH)) {
+			this.direction = EAST;
+		} else if(this.direction.equals(EAST)) {
+			this.direction = SOUTH;
+		} else if(this.direction.equals(SOUTH)) {
+			this.direction = WEST;
+		} else {
+			this.direction = NORTH;
+		}
+	}
+	
+	private void moveLeft() {
+		if(this.direction.equals(NORTH)) {
+			this.direction = WEST;
+		} else if(this.direction.equals(WEST)) {
+			this.direction = SOUTH;
+		} else if(this.direction.equals(SOUTH)) {
+			this.direction = EAST;
+		} else {
+			this.direction = NORTH;
+		}
 	}
 	
 	private boolean outOfBounds() {
@@ -90,17 +119,13 @@ public class LightBike extends Element {
 		Boolean unableToMove = false;
 		if(getNextMatrixPositionData() != null &&
 				getNextMatrixPositionData().getType() == TRAIL) {
-			if(getShield()) {
-				//eliminar escudo del stack
-				//shield = false
-			}
-			else {
+			if(shieldStack.peek() != null) {
+				shieldStack.pop();
+			} else {
 				unableToMove = true;
 			}
-			return unableToMove;
 		}
-		return(getNextMatrixPositionData() != null &&
-				getNextMatrixPositionData().getType() == TRAIL); 
+		return unableToMove;
 	}
 	
 	private boolean mineInPath() {
@@ -108,7 +133,11 @@ public class LightBike extends Element {
 		if (getNextMatrixPositionData() != null && 
 				getNextMatrixPositionData().getType() == MINE) {
 			getNextMatrixPositionData().setMatrixPosition(null);
-			result = true;
+			if(shieldStack.peek() != null) {
+				shieldStack.pop();
+			} else {
+				result = true;
+			}
 		}
 		return result;
 	}
@@ -131,12 +160,12 @@ public class LightBike extends Element {
 		}
 		else if(getNextMatrixPositionData() != null &&
 				getNextMatrixPositionData().getType() == SHIELD) {
-			powerUpStack.push(getNextMatrixPositionData());
+			shieldStack.push(getNextMatrixPositionData());
 			getNextMatrixPositionData().setMatrixPosition(null);
 		}
 		else if(getNextMatrixPositionData() != null &&
 				getNextMatrixPositionData().getType() == HYPER_SPEED) {
-			powerUpStack.push(getNextMatrixPositionData());
+			//powerUpStack.push(getNextMatrixPositionData());
 			getNextMatrixPositionData().setMatrixPosition(null);
 		}	
 	}
@@ -289,20 +318,12 @@ public class LightBike extends Element {
 		this.itemQueue = itemQueue;
 	}
 
-	public Stack<Element> getPowerUpStack() {
-		return powerUpStack;
+	public QuadrupleList<Element> getMatrix() {
+		return matrix;
 	}
 
-	public void setPowerUpStack(Stack<Element> powerUpStack) {
-		this.powerUpStack = powerUpStack;
-	}
-
-	public Boolean getShield() {
-		return shield;
-	}
-
-	public void setShield(Boolean shield) {
-		this.shield = shield;
+	public void setMatrix(QuadrupleList<Element> matrix) {
+		this.matrix = matrix;
 	}
 	 	
 }

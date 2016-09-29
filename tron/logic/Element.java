@@ -21,9 +21,11 @@ public class Element implements Constants {
 	}
 	
 	public void setMatrixPosition(QuadrupleNode<Element> matrixPosition) {
-		if(this.matrixPosition == null && matrixPosition != null) {
-			this.matrixPosition = matrixPosition;
-			matrixPosition.setData(this);
+		if(this.matrixPosition == null) {
+			if(matrixPosition != null) {
+				this.matrixPosition = matrixPosition;
+				matrixPosition.setData(this);
+			}	
 		}
 		else if(matrixPosition == null) {
 			this.matrixPosition.setData(null);
