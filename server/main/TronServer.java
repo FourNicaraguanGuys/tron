@@ -12,7 +12,12 @@ import org.json.simple.JSONArray;
 import linkedlist.simple.List;
 import server.serverJson.ServerJson;
 
-
+/**
+ * En esta clase 
+ * 
+ * @author Manuel
+ *
+ */
 
 public class TronServer {
 
@@ -57,6 +62,7 @@ public class TronServer {
                 while (true) {
                 	System.out.println("entró");
                 	if (listbikeID.getHead() == null){
+                		
                 		Jstring = in.readLine();
                 		if (Jstring!= null){
                 			Integer r = (Integer) serverJson.decodeJRow(Jstring);

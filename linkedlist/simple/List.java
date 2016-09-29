@@ -140,7 +140,10 @@ public class List <T> {
 		   }
 	   }
    }
-   
+   /**
+    * Este método prueba si existe un elemento
+    * en la lista, los busca y devuelve un true or false.
+    */
    public boolean exist(T data) {
 	   boolean exist = false;
 	   if (head != null) {

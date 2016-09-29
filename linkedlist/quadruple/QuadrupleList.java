@@ -26,7 +26,11 @@ public class QuadrupleList<T> {
 			}
 		}
 	}
-	
+	/** Crea una fila de la matriz dependiendo
+	 * de la cantidad de elementos que se le pidan. 
+	 * @param numberOfElements
+	 * 
+	 */
 	private QuadrupleNode<T> createRow(int numberOfElements) {
 		QuadrupleNode<T> head = new QuadrupleNode<T>();
 		QuadrupleNode<T> index = head;
@@ -38,7 +42,14 @@ public class QuadrupleList<T> {
 		}
 		return head;
 	}
-	
+	/** Crea una fila de la matriz dependiendo
+	 * de la cantidad de elementos que se le pidan. 
+	 * 
+	 * @param numberOfColumns
+	 * @param topRow
+	 * @param botRow
+	 * 
+	 */
 	private void connectRows(int numberOfColumns, QuadrupleNode<T> topRow, QuadrupleNode<T> botRow) {
 		QuadrupleNode<T> topNode = topRow;
 		QuadrupleNode<T> botNode = botRow;
