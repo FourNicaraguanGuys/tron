@@ -92,14 +92,17 @@ public class ServerJson {
 	}
 	public int decodeJRow(String JString){
 		JSONParser parser = new JSONParser();
+		String ss = "";
 		int state = -1;   
 	    try {  
 	         
 	       Object obj = parser.parse(JString);       
 	       JSONObject jsonObject = (JSONObject) obj;  
 	         
-	       state = (int) jsonObject.get("Row");
-	         
+	       //state = (int) jsonObject.get("rows");
+	       ss = (String) jsonObject.get("rows");
+	       state = Integer.parseInt(ss);
+	       
 	       } catch (ParseException e) {  
 	         e.printStackTrace();  
 	        }      
@@ -107,13 +110,17 @@ public class ServerJson {
 	}
 	public int decodeJColumn(String JString){
 		JSONParser parser = new JSONParser();
+		String ss = "";
 	    int state = -1;    
 	    try {  
 	         
 	       Object obj = parser.parse(JString);     
 	       JSONObject jsonObject = (JSONObject) obj;  
 	         
-	       state = (int) jsonObject.get("column");
+	       //state = (int) jsonObject.get("columns");
+	       ss = (String) jsonObject.get("columns");
+	       state = Integer.parseInt(ss);
+	
 	         
 	       } catch (ParseException e) {  
 	         e.printStackTrace();  
