@@ -7,7 +7,8 @@ public class QuadrupleList<T> {
 	private int columns;
 
 	/** Constructor de la lista cuadruple recibe como parametro
-	 * el numero de filas y columnas que desea crear 
+	 * el numero de filas y columnas que desea crear.ss
+	 * 
 	 * 
 	 * @param numberOfRows
 	 * @param numberOfColumns
