@@ -12,16 +12,13 @@ public class GameCoordinator implements Logic, Constants {
 	private QuadrupleList<Element> matrix;
 	private List<LightBike> bikesList;
 	
-	public GameCoordinator(int matrixNumberOfRows, int matrixNumberOfColumns) {
-		this.matrix = new QuadrupleList<Element>(matrixNumberOfRows,matrixNumberOfColumns);
-		this.bikesList = generateBikeList(2); //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+	public void setMatrixSize(int rowLenght, int columnLenght) {
+		setMatrix(new QuadrupleList<Element>(rowLenght,columnLenght));
 	}
 	
-	public GameCoordinator() {
-		
+	public void generateBikes() {
+		generateBikeList(4);
 	}
-	
-	
 	
 	private List<LightBike> generateBikeList(int numberOfBikes) {
 		List<LightBike> lightBikeList = new List<>();
@@ -45,14 +42,14 @@ public class GameCoordinator implements Logic, Constants {
 	}
 	
 	@Override
-	public void modifyDirections(List<String> list) {
-		Node<String> directionNode = list.getHead();
+	public void modifyDirections(String[] directionsArray) {
 		Node<LightBike> bikeNode = bikesList.getHead();
-		while(directionNode != null) {
-			bikeNode.getData().modifyDirection(directionNode.getData());
-			directionNode = directionNode.getNextNode();
-			bikeNode = bikeNode.getNextNode();
-		}
+		for(int index = 0; index < directionsArray.length; index++) {
+			if (bikeNode != null) {
+				bikeNode.getData().modifyDirection(directionsArray[index]);
+				bikeNode = bikeNode.getNextNode();
+			}
+		}	
 	}
 
 	private QuadrupleNode<Element> randomBikeMatrixPosition() {

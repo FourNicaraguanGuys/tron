@@ -1,15 +1,12 @@
-package server.serverJson;
+package tron.serverJson;
 
 import org.json.simple.JSONArray;
 import org.json.simple.parser.*;
 import org.json.simple.JSONObject;
 
-
-
-
 public class ServerJson {
-	
-	
+		
+	@SuppressWarnings("unchecked")
 	public JSONArray createJson(int row, int column){
 		int n = 0;
 		JSONArray jMatrix = new JSONArray();
@@ -50,7 +47,8 @@ public class ServerJson {
 			
 	}
 	
-	public JSONArray encodeJArray(int[][] dmatrix){
+	@SuppressWarnings("unchecked")
+	public JSONArray encodeJArray(String[][] dmatrix){
 		JSONArray jMatrix = new JSONArray();
 		for (int i = 0; i < dmatrix.length; i++){
 			JSONArray jrow = new JSONArray();
@@ -112,7 +110,7 @@ public class ServerJson {
 	    int state = -1;    
 	    try {  
 	         
-	       Object obj = parser.parse(JString);       
+	       Object obj = parser.parse(JString);     
 	       JSONObject jsonObject = (JSONObject) obj;  
 	         
 	       state = (int) jsonObject.get("column");
