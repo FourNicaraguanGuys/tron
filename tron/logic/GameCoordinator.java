@@ -121,11 +121,11 @@ public class GameCoordinator implements Logic, Constants {
 	}
 
 	public String[][] generateMatrix() {
-		Element[][] elementMatrix = (Element[][])matrix.generateMatrix();
+		Object[][] elementMatrix = matrix.generateMatrix();
 		String[][] stringMatrix = new String[matrix.getRows()][matrix.getColumns()];
 		for(int row = 0; row < matrix.getRows()-1; row++) {
 			for(int column = 0; column < matrix.getColumns()-1; column++) {
-				Element currentElement = elementMatrix[row][column];
+				Element currentElement = Element.class.cast(elementMatrix[row][column]);
 				if(currentElement != null) {
 					if(currentElement.getType() == BIKE) {
 						stringMatrix[row][column] = currentElement.getType() + 

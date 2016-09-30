@@ -25,6 +25,7 @@ public class Handler extends Thread {
     private PrintWriter out;
     private String name;
     private Logic logic;
+    private String[][] SArray;
 
     public Handler(Socket socket,Logic logic) {
         setSocket(socket);
@@ -43,12 +44,14 @@ public class Handler extends Thread {
             while (true) {
             	System.out.println("entr�");
             	if (listbikeID.getHead() == null){
-            		
             		Jstring = in.readLine();
             		if (Jstring!= null){
+            			System.out.println(Jstring);
             			Integer r = (Integer) serverJson.decodeJRow(Jstring);
             			Integer c = (Integer) serverJson.decodeJColumn(Jstring);
-            			JAMain = serverJson.createJson(r, c); //generate matrix
+            			logic.setMatrixSize(r, c);
+            			SArray = logic.generateMatrix();
+            			JAMain = serverJson.encodeJArray(SArray); //generate matrix
             			System.out.println(JAMain); 
             			out.print(JAMain);
             			break;
