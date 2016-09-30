@@ -13,7 +13,8 @@ import linkedlist.simple.List;
 import server.serverJson.ServerJson;
 
 /**
- * En esta clase 
+ * En esta clase se tiene la clase principal  que es el main del server
+ * y una calse secundaria que maneja la lógica del juego
  * 
  * @author Manuel
  *
