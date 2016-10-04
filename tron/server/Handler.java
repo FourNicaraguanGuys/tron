@@ -53,7 +53,7 @@ public class Handler extends Thread {
             			SArray = logic.generateMatrix();
             			JAMain = serverJson.encodeJArray(SArray); //generate matrix
             			System.out.println(JAMain); 
-            			out.println(JAMain);
+            			out.println(JAMain);            			
             			break;
             		}
             	}else{
