@@ -5,48 +5,8 @@ import org.json.simple.parser.*;
 import org.json.simple.JSONObject;
 
 public class ServerJson {
-		
-	@SuppressWarnings("unchecked")
-	public JSONArray createJson(int row, int column){
-		int n = 0;
-		JSONArray jMatrix = new JSONArray();
-		for (int i = 0; i < row; i++){
-			JSONArray jrow = new JSONArray();
-			for (int j = 0; j < column; j++ ){
-				jrow.add(n);
-				n += 1;
-			}
-			jMatrix.add(jrow);
-		}
-		return jMatrix;
-	}
-	
-	public int[][] decodeJArray(String jArray) throws ParseException{
-		JSONParser parser = new JSONParser();
-		int[][] dmatrix = null;
-		try{
-			Object ob = parser.parse(jArray);
-			JSONArray jsonArray = (JSONArray) ob;
-			JSONArray rowArray =  (JSONArray) jsonArray.get(0);
-			int[][] matrix = new int[jsonArray.size()][rowArray.size()];
 			
-			for (int iRow = 0; iRow < jsonArray.size(); iRow++){
-				rowArray = (JSONArray) jsonArray.get(iRow);
-				int[] dataArray = new int[rowArray.size()];
-				for (int jColumn = 0; jColumn < rowArray.size(); jColumn++){
-					dataArray[jColumn] = (int)(long) rowArray.get(jColumn);
-				}
-				matrix[iRow] = dataArray;
-			}
-			dmatrix = matrix;
-			
-		 } catch (ParseException e) {  
-	         e.printStackTrace();  
-	     }    
-		return dmatrix;
-			
-	}
-	
+
 	@SuppressWarnings("unchecked")
 	public JSONArray encodeJArray(String[][] dmatrix){
 		JSONArray jMatrix = new JSONArray();
