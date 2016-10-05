@@ -17,7 +17,7 @@ public class clientNU {
 	private JTextField nrows;
 	private String Rows;
 	private String Columns;
-
+	private String ip = "localhost";
 
 	public clientNU() {
 		initialize();
@@ -57,6 +57,11 @@ public class clientNU {
 		JButton btnStart = new JButton("Start");
 		btnStart.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				clientLogic logic = new clientLogic(ip, Columns, Rows, true);
+				logic.start();
+				new gamePanelNU(logic.getMatrix(), Columns, Rows);
+				
+				frame.setVisible(false);
 			}
 		});
 		btnStart.setBounds(366, 263, 89, 23);
@@ -68,15 +73,13 @@ public class clientNU {
 				Rows = nrows.getText();
 				Columns = ncolumns.getText();
 				
-				System.out.println(Rows);
-				System.out.println(Columns);
+				System.out.println("Filas: " + Rows);
+				System.out.println("Columnas: " + Columns);
 			}
 		});
 		btnSave.setBounds(267, 263, 89, 23);
 		frame.getContentPane().add(btnSave);
 	}
 	
-	public void sendColumnsAndRows(){
-		
-	}
+
 }

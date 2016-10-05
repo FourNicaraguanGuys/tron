@@ -7,6 +7,8 @@ package linkedlist.simple;
  * @param <T>
  */
 
+import javax.swing.JPanel;
+
 public class List <T> {
 
    private Node<T> head;
@@ -168,6 +170,7 @@ public class List <T> {
    public Node<T> getHead() {
       return head;
    }
+   
 
    public void setTail(Node<T> tail) {
       this.tail = tail;

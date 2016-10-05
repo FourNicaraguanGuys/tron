@@ -5,20 +5,20 @@ import org.json.simple.JSONArray;
 
 public class clientJson {
 	
-	public static int[][] readJSON(String jArray) throws ParseException {
+	public String[][] readJSON(String jArray) throws ParseException {
 	    JSONParser parser = new JSONParser();
-	    int[][] dmatrix = null;
+	    String[][] dmatrix = null;
 	    try{
 	      Object ob = parser.parse(jArray);
 	      JSONArray jsonArray = (JSONArray) ob;
 	      JSONArray rowArray =  (JSONArray) jsonArray.get(0);
-	      int[][] matrix = new int[jsonArray.size()][rowArray.size()];
+	      String[][] matrix = new String[jsonArray.size()][rowArray.size()];
 	      
 	      for (int iRow = 0; iRow < jsonArray.size(); iRow++){
 	        rowArray = (JSONArray) jsonArray.get(iRow);
-	        int[] dataArray = new int[rowArray.size()];
+	        String[] dataArray = new String[rowArray.size()];
 	        for (int jColumn = 0; jColumn < rowArray.size(); jColumn++){
-	          dataArray[jColumn] = (int)(long) rowArray.get(jColumn);
+	          dataArray[jColumn] = (String) rowArray.get(jColumn);
 	        }
 	        matrix[iRow] = dataArray;
 	      }

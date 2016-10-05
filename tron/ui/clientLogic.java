@@ -5,128 +5,81 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-import org.json.simple.JSONArray;
-
 import com.google.gson.Gson;
 
-import tron.client.Json.clientJson;
-import tron.client.Json.writerJson;
-import tron.client.Json.*;;
+import tron.client.Json.*;
 
-public class clientLogic extends Thread {
+public class clientLogic extends Thread{
+	//****************************************//
 	private BufferedReader dataIn;
 	private PrintWriter dataOut;
+	//****************************************//
 	private int port = 9001;
 	private String host = "";
 	private Socket socketClient;
-	public int[][] arrayMap;
-	private String columns;
-	private String rows;
+	public String[][] arrayMap;
+	//****************************************//
+	Gson jsonConvert;
+	Gson jsonConvertAction;
+	//****************************************//
+	private clientJson cj = new clientJson();
+	//****************************************//
 	
-	public clientLogic (String ip){
+	
+	public clientLogic(String ip, String rows, String columns, boolean nGame){
 		this.host = ip;
 		try{
-			socketClient = new Socket (host, port);
+			socketClient = new Socket(host, port);
 			dataIn = new BufferedReader(new InputStreamReader(socketClient.getInputStream()));
 			dataOut = new PrintWriter(socketClient.getOutputStream(), true);
+			if (nGame == true){
+				sendMatrix(columns, rows);
+				String json = dataIn.readLine();
+				System.out.println(json);
+				arrayMap = cj.readJSON(json);
+			}
+
 		}
-		catch (Exception e){
+		catch(Exception e){
 			e.printStackTrace();
 		}
 	}
 	
+
 	public void run(){
-		try{
-			while (true){
-				String arrayJson = dataIn.readLine();
-				System.out.println(arrayJson);
-				arrayMap = clientJson.readJSON(arrayJson);//transforma a un array
-				arrayMap[0][1] = 0;
-				System.out.print(getArray());
-				JSONArray Json1 = clientJson.encodeJSON(arrayMap);
-				dataOut.println(Json1);
+		while(true){
+			try{
+				String datos = dataIn.readLine();
+				System.out.println(datos);
+				//arrayMap = cj.readJSON(datos);
+			}
+			catch(Exception e){
+				e.printStackTrace();
 			}
 		}
-		catch (Exception e){
-			e.printStackTrace();
-		}
+
 	}
 	
-	public void firstConnection(){
-    	writerJson obj = new writerJson(columns, rows);
-    	Gson gson = new Gson();
-		String jsonString = gson.toJson(obj);
-    	dataOut.println(jsonString);
+
+	public void sendMatrix(String columns, String rows){
+		writerJson matrix = new writerJson();
+		matrix.dimensions(columns, rows);
+		jsonConvert = new Gson();
+		String jsonString = jsonConvert.toJson(matrix);
+		dataOut.println(jsonString);
 	}
 	
-	public int[][] getArray (){
+	public void sendAction(String id, String event){
+		writerJson action = new writerJson();
+		action.signals(id, event);
+		jsonConvertAction = new Gson();
+		String jsonStringAction = jsonConvertAction.toJson(action);
+		dataOut.println(jsonStringAction);
+	}
+	
+	public String[][] getMatrix(){
 		return arrayMap;
 	}
 	
-	public void getRows(String nRowsc){
-		this.rows = nRowsc;
-	}
-	public void getColumns(String nColumnsc){
-		this.columns = nColumnsc;
-	}
-
 }
 	
-	
-	
-
-	
-/**	
-	private BufferedReader dataIn;
-	private PrintWriter dataOut;
-	private int port = 9001;
-	private String host = "";
-	private Socket socketClient;
-	public int[][] arrayMap;
-	private int nRow = 0;
-	private int nColumn = 0;
-	
-	
-	public clientLogic (String ip){
-		this.host = ip;
-		try{
-			socketClient = new Socket (host, port);
-			dataIn = new BufferedReader(new InputStreamReader(socketClient.getInputStream()));
-			dataOut = new PrintWriter(socketClient.getOutputStream(), true);
-		}
-		catch (Exception e){
-			e.printStackTrace();
-		}
-	}
-
-	@Override
-	public void run() {
-		// TODO Auto-generated method stub
-		try{
-			while (true){
-				String arrayJson = dataIn.readLine();
-				System.out.println(arrayJson);
-				arrayMap = clientJson.readJSON(arrayJson);//transforma a un array
-				arrayMap[0][1] = 0;
-				System.out.print(getArray());
-				JSONArray Json1 = clientJson.encodeJSON(arrayMap);
-				dataOut.println(Json1);
-			}
-		}
-		catch (Exception e){
-			e.printStackTrace();
-		}
-	}
-	public void setRow (int row){
-		this.nRow = row;
-	}
-	
-	public void setColumn(int column){
-		this.nColumn = column;
-	}
-	
-	public int[][] getArray (){
-		return arrayMap;
-	}
-}
-**/

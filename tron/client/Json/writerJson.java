@@ -3,10 +3,17 @@ package tron.client.Json;
 public class writerJson {
     private String columns;
     private String rows;
-    public writerJson (String columns, String rows) {
-        this.columns = columns;
-        this.rows = rows;
-
+    private String ID;
+    private String action;
+    
+    public void dimensions (String columns, String rows){
+    	this.columns = columns;
+    	this.rows = rows;
+    }
+    
+    public void signals(String ID, String action){
+    	this.ID = ID;
+    	this.action = action;
     }
     
 /**

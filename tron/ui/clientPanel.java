@@ -67,7 +67,6 @@ public class clientPanel {
 		JButton btnJG = new JButton("Join Game");
 		btnJG.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				gamePanel game = new gamePanel();
 				frame.setVisible(false);
 				
 				

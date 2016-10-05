@@ -23,11 +23,7 @@ public class gamePanel  extends Thread{
 	public void run(){
 		initialize();
 		frame.setVisible(true);
-		ip = JOptionPane.showInputDialog(frame, "Enter IP Address", "Welcome, The TRON Game", JOptionPane.QUESTION_MESSAGE);
 		
-		clientLogic logic = new clientLogic (ip);
-		logic.run();
-		logic.start();
 	}
 	
 	private void initialize(){
