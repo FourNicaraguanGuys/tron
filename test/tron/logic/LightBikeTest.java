@@ -13,6 +13,16 @@ import tron.logic.LightBike;
 public class LightBikeTest {
 	
 	@Test
+	public void testBikeCollision() {
+		QuadrupleList<Element> matrix = new QuadrupleList<>(10,10); 
+		LightBike lightBikeOne = new LightBike(matrix.getNode(5, 5), 1, matrix, 1 ,1,"east",3);
+		LightBike lightBikeTwo = new LightBike(matrix.getNode(5, 6), 1, matrix, 1 ,1,"east",3);
+		lightBikeOne.move(); 
+		lightBikeTwo.move();
+		assertFalse(lightBikeOne.isActive());
+	}
+	
+	@Test
 	public void testSingleMove() {
 		QuadrupleList<Element> matrix = new QuadrupleList<>(10,10); 
 		LightBike lightBike = new LightBike(matrix.getNode(5, 5), 1, matrix, 1 ,1,"east",3);

@@ -9,9 +9,8 @@ import org.json.simple.JSONArray;
 
 import com.google.gson.Gson;
 
-import tron.client.Json.clientJson;
-import tron.client.Json.writerJson;
-import tron.client.Json.*;;
+import tron.client.json.clientJson;
+import tron.client.json.writerJson;
 
 public class clientLogic extends Thread {
 	private BufferedReader dataIn;

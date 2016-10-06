@@ -7,7 +7,107 @@ import org.json.simple.JSONObject;
 public class ServerJson {
 		
 	@SuppressWarnings("unchecked")
-	public JSONArray createJson(int row, int column){
+	public static JSONObject encodeUserId(int id) {
+		JSONObject json = new JSONObject();
+		json.put("status", "userIdCreated");
+		json.put("userId", id);
+		return json;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static JSONObject encodeStatus(String status) {
+		JSONObject json = new JSONObject();
+		json.put("status", status);
+		return json;
+	}
+	
+	public static String decodeDirection(String jsonString) {
+		JSONParser parser = new JSONParser();
+		String direction = null;
+		try {         
+			Object obj = parser.parse(jsonString);  
+	         
+			JSONObject jsonObject = (JSONObject) obj;  
+	        
+			direction = (String)jsonObject.get("direction");  
+	        
+		} catch (ParseException e) {  
+			e.printStackTrace();  
+		}  
+		return direction;	
+	}
+	
+	public static int decodeUserId(String jsonString) {
+		JSONParser parser = new JSONParser();
+		int userId = -1;
+		try {         
+			Object obj = parser.parse(jsonString);  
+	         
+			JSONObject jsonObject = (JSONObject) obj;  
+	        System.out.println(jsonString);
+	        /*
+			String userIdString = (String)jsonObject.get("userId");  
+			userId = Integer.parseInt(userIdString);
+	        */
+	        userId = (int)(long)jsonObject.get("userId");
+	        
+		} catch (ParseException e) {  
+			e.printStackTrace();  
+		}  
+		return userId;	
+	}
+	
+	public static String decodeAction(String jsonString) {
+		JSONParser parser = new JSONParser();
+		String action = null;   
+		try {         
+			Object obj = parser.parse(jsonString);  	     
+			JSONObject jsonObject = (JSONObject) obj;          
+			action = (String)jsonObject.get("action");  	        
+		} catch (ParseException e) {  
+			e.printStackTrace();  
+		}  
+		return action;	    
+	}
+	
+	public static int decodeRows(String jsonString) {
+		JSONParser parser = new JSONParser();
+		int rows = 0;
+		try {         
+			Object obj = parser.parse(jsonString);  
+	         
+			JSONObject jsonObject = (JSONObject) obj;  
+			
+			String rowsString = (String)jsonObject.get("rows");
+			rows = Integer.parseInt(rowsString);
+	        
+		} catch (ParseException e) {  
+			e.printStackTrace();  
+		}  
+		return rows;	    
+	}
+	
+	public static int decodeColumns(String jsonString) {
+
+		JSONParser parser = new JSONParser();
+		int columns = 0;
+	      
+		try {         
+			Object obj = parser.parse(jsonString);  
+	         
+			JSONObject jsonObject = (JSONObject) obj;  
+	        
+			String columnsString = (String)jsonObject.get("columns");  
+			columns = Integer.parseInt(columnsString);
+	        
+		} catch (ParseException e) {  
+			e.printStackTrace();  
+		}  
+		return columns;	    
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static JSONArray createJson(int row, int column){
 		int n = 0;
 		JSONArray jMatrix = new JSONArray();
 		for (int i = 0; i < row; i++){
@@ -21,7 +121,7 @@ public class ServerJson {
 		return jMatrix;
 	}
 	
-	public int[][] decodeJArray(String jArray) throws ParseException{
+	public static int[][] decodeJArray(String jArray) throws ParseException{
 		JSONParser parser = new JSONParser();
 		int[][] dmatrix = null;
 		try{
@@ -48,7 +148,7 @@ public class ServerJson {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public JSONArray encodeJArray(String[][] dmatrix){
+	public static JSONObject encodeJArray(String[][] dmatrix){
 		JSONArray jMatrix = new JSONArray();
 		for (int i = 0; i < dmatrix.length; i++){
 			JSONArray jrow = new JSONArray();
@@ -57,10 +157,15 @@ public class ServerJson {
 			}
 			jMatrix.add(jrow);
 		}
-		return jMatrix;
+		
+		JSONObject matrixStatus = new JSONObject();
+		matrixStatus.put("status", "inGame");
+		matrixStatus.put("matrix", matrixStatus);
+		
+		return matrixStatus;
 	}
 	
-	public String decodeJSPlayer(String JString){
+	public static String decodeJSPlayer(String JString){
 		JSONParser parser = new JSONParser();
 	    String state = null;    
 	    try {  
@@ -75,7 +180,7 @@ public class ServerJson {
 	        }      
 	    return state;
 	}
-	public String decodeJSKey(String JString){
+	public static String decodeJSKey(String JString){
 		JSONParser parser = new JSONParser();
 	    String state = null;    
 	    try {  
@@ -90,7 +195,7 @@ public class ServerJson {
 	        }      
 	    return state;
 	}
-	public int decodeJRow(String JString){
+	public static int decodeJRow(String JString){
 		JSONParser parser = new JSONParser();
 		String ss = "";
 		int state = -1;   
@@ -108,7 +213,7 @@ public class ServerJson {
 	        }      
 	    return state;
 	}
-	public int decodeJColumn(String JString){
+	public static int decodeJColumn(String JString){
 		JSONParser parser = new JSONParser();
 		String ss = "";
 	    int state = -1;    

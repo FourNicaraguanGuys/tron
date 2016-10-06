@@ -5,19 +5,28 @@ import linkedlist.quadruple.QuadrupleNode;
 import linkedlist.simple.List;
 import linkedlist.simple.Node;
 import tron.misc.RandomGenerator;
+import tron.server.Constants;
 
-public class GameCoordinator implements Logic, Constants {
+public class Game implements Constants {
 	
 	private boolean gameOver;
+	private int numberOfPlayers;
 	private QuadrupleList<Element> matrix;
 	private List<LightBike> bikesList;
+	private int playersUpdated;
+	private boolean updated;
+	
+	public Game(int rowLenght, int columnLenght) {
+		setGameOver(false);
+		setNumberOfPlayers(0);
+		setMatrixSize(rowLenght,columnLenght);
+		setBikesList(generateBikeList(DEFAULT_NUMBER_OF_BIKES));
+		setPlayersUpdated(0);
+		setUpdated(false);
+	}
 	
 	public void setMatrixSize(int rowLenght, int columnLenght) {
 		setMatrix(new QuadrupleList<Element>(rowLenght,columnLenght));
-	}
-	
-	public void generateBikes() {
-		generateBikeList(4);
 	}
 	
 	private List<LightBike> generateBikeList(int numberOfBikes) {
@@ -26,6 +35,21 @@ public class GameCoordinator implements Logic, Constants {
 			lightBikeList.insertTail(new LightBike(randomBikeMatrixPosition(),counter+1,this.matrix));
 		}
 		return lightBikeList;
+	}
+	
+	public boolean assignBikeToPlayer(int userId) {
+		Node<LightBike> pointer = bikesList.getHead();
+		boolean playerAdded = false;
+		while(pointer!=null) {
+			if(pointer.getData().getUserId() < 0) {
+				pointer.getData().setUserId(userId);
+				numberOfPlayers++;
+				playerAdded = true;
+				break;
+			}
+			pointer = pointer.getNextNode();
+		}
+		return playerAdded;
 	}
 	
 	private QuadrupleNode<Element> randomMatrixPosition() {
@@ -41,7 +65,28 @@ public class GameCoordinator implements Logic, Constants {
 		return randomMatrixPosition;
 	}
 	
-	@Override
+	public void modifyDirection(int bikeId, String direction) {
+		Node<LightBike> bikeNode = bikesList.getHead();
+		while(bikeNode != null) {
+			if(bikeNode.getData().getId() == bikeId) {
+				bikeNode.getData().setDirection(direction);
+				playersUpdated++;
+				break;
+			}
+			bikeNode = bikeNode.getNextNode();
+		}
+		
+		if(numberOfPlayers <= playersUpdated) {
+			update();
+			setUpdated(true);
+		}
+	}
+	
+	public void outdate() {
+		setUpdated(false);
+		setPlayersUpdated(0);
+	}
+	
 	public void modifyDirections(String[] directionsArray) {
 		Node<LightBike> bikeNode = bikesList.getHead();
 		for(int index = 0; index < directionsArray.length; index++) {
@@ -68,6 +113,7 @@ public class GameCoordinator implements Logic, Constants {
 	public void update() {
 		moveBikes();
 		generateElements();
+		checkState();
 	}
 	
 	private void moveBikes() {
@@ -92,13 +138,17 @@ public class GameCoordinator implements Logic, Constants {
 			} else if(randomInt == 4) {
 				generateElement(SHIELD);
 			} else {
-				generateElement(HYPER_SPEED);
+				generateHyperSpeed();
 			}
 		}
 	}
 	
 	private void generateElement(String type) {
 		new Element(type, randomMatrixPosition());
+	}
+	
+	private void generateHyperSpeed() {
+		new HyperSpeed(randomMatrixPosition() );
 	}
 
 	public void checkState() {
@@ -117,7 +167,7 @@ public class GameCoordinator implements Logic, Constants {
 			}
 			nodePointer = nodePointer.getNextNode();
 		}
-		this.gameOver = gameOver;
+		setGameOver(gameOver);
 	}
 
 	public String[][] generateMatrix() {
@@ -164,6 +214,30 @@ public class GameCoordinator implements Logic, Constants {
 
 	public void setBikesList(List<LightBike> bikesList) {
 		this.bikesList = bikesList;
+	}
+
+	public int getNumberOfPlayers() {
+		return numberOfPlayers;
+	}
+
+	public void setNumberOfPlayers(int numberOfPlayers) {
+		this.numberOfPlayers = numberOfPlayers;
+	}
+
+	public int getPlayersUpdated() {
+		return playersUpdated;
+	}
+
+	public void setPlayersUpdated(int playersUpdated) {
+		this.playersUpdated = playersUpdated;
+	}
+
+	public boolean isUpdated() {
+		return updated;
+	}
+
+	public void setUpdated(boolean updated) {
+		this.updated = updated;
 	}
 	
 }

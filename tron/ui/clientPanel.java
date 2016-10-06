@@ -4,7 +4,6 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 
 import java.awt.Font;
 import javax.swing.JButton;
@@ -57,7 +56,7 @@ public class clientPanel {
 		JButton btnSNG = new JButton("Start New Game");
 		btnSNG.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				clientNU nuevo = new clientNU ();
+				new clientNU ();
 				frame.setVisible(false);
 			}
 		});
@@ -67,14 +66,20 @@ public class clientPanel {
 		JButton btnJG = new JButton("Join Game");
 		btnJG.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				gamePanel game = new gamePanel();
+				new gamePanel();
 				frame.setVisible(false);
-				
-				
 			}
 		});
 		btnJG.setBounds(218, 166, 132, 48);
 		frame.getContentPane().add(btnJG);
+	}
+
+	public String getIp() {
+		return ip;
+	}
+
+	public void setIp(String ip) {
+		this.ip = ip;
 	}
 
 }

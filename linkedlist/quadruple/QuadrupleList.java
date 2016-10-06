@@ -118,8 +118,12 @@ public class QuadrupleList<T> {
 	 */
 	public Object[][] generateMatrix() {
 		Object[][] matrixArray = new Object[rows][columns];
-		QuadrupleNode<T> pointer = origin;
-		int column = 1, row = 1;
+		for(int rowIndex = 0; rowIndex<rows;rowIndex++) {
+			for(int columnIndex = 0; columnIndex<columns; columnIndex++) {
+				matrixArray[rowIndex][columnIndex] = getNode(rowIndex+1,columnIndex+1).getData();
+			}
+		}
+		/*
 		while(pointer != null) {
 			if(pointer.getEastNode() != null) {
 				matrixArray[row-1][column-1] = getNode(row,column).getData();
@@ -133,6 +137,7 @@ public class QuadrupleList<T> {
 				pointer = getNode(row,column);
 			}
 		}
+		*/
 		return matrixArray;
 	}
 	

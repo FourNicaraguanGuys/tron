@@ -1,7 +1,5 @@
 package tron.ui;
 
-import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 
 public class gamePanelNU extends Thread {

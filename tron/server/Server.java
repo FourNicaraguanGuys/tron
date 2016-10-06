@@ -3,12 +3,11 @@ package tron.server;
 import java.io.IOException;
 import java.net.ServerSocket;
 
-import tron.logic.Logic;
-import tron.mainserver.Constants;
+import tron.data.DataAccess;
 
 /**
  * En esta clase se tiene la clase principal  que es el main del server
- * y una calse secundaria que maneja la l�gica del juego
+ * y una calse secundaria que maneja la logica del juego
  * 
  * @author Manuel
  *
@@ -18,19 +17,19 @@ public class Server implements Runnable, Constants {
 	
 	private int portNumber;
 	private boolean listening;
-	private Logic logic;
+	private DataAccess dataAccess;
 	
-	public Server(Logic logic) {
+	public Server(DataAccess dataAccess) {
 		setPortNumber(PORT_NUMBER);
 		setListening(true);
-		setLogic(logic);
+		setDataAccess(dataAccess);
 	}
     
 	public void run(){
 		System.out.println("Server Initiated");
 		try (ServerSocket serverSocket = new ServerSocket(getPortNumber())) { 
 			while (isListening()) {
-				new Handler(serverSocket.accept(),getLogic()).start();
+				new Handler(serverSocket.accept(),new Protocol(getDataAccess())).start();
 			}
 		} catch (IOException e) {
 			System.err.println("Could not listen on port " + portNumber);
@@ -54,25 +53,12 @@ public class Server implements Runnable, Constants {
 		this.listening = listening;
 	}
 
-	public Logic getLogic() {
-		return logic;
+	public DataAccess getDataAccess() {
+		return dataAccess;
 	}
 
-	public void setLogic(Logic logic) {
-		this.logic = logic;
+	public void setDataAccess(DataAccess dataAccess) {
+		this.dataAccess = dataAccess;
 	}
-
-	/**
-	public static void main(String[] args) throws Exception {
-		ServerSocket listener = new ServerSocket(getPortNumber());
-		try {
-			while (true) {
-				new Handler(listener.accept()).start();
-			}
-		} finally {
-			listener.close();
-		}
-	}*/
-	
 	
 }

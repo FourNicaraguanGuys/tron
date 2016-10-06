@@ -6,52 +6,56 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-import org.json.simple.JSONArray;
-
-import linkedlist.simple.List;
-import linkedlist.simple.Node;
-import tron.logic.Logic;
-import tron.serverJson.ServerJson;
-
 public class Handler extends Thread {
-	
-    private ServerJson serverJson = new ServerJson();
-    private JSONArray JAMain;
-    private List<PrintWriter> listPrintWriter = new List<PrintWriter>();
-    private List<String> listbikeID = new List<String>();
-    private String Jstring;
+    
     private Socket socket;
+    private Protocol protocol;
     private BufferedReader in;
     private PrintWriter out;
-    private String name;
-    private Logic logic;
-    private String[][] SArray;
 
-    public Handler(Socket socket,Logic logic) {
+    public Handler(Socket socket,Protocol protocol) {
         setSocket(socket);
-        setLogic(logic);
+        setProtocol(protocol);
     }
+    
 
     public void run() {
+        
+    	try (PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+                BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));) {
+             
+    		String input;         
+    		protocol.init(this);     
+    		System.out.println("New Connection");
+    		out.println(protocol.getResponse());
+    		
+    		while ((input = in.readLine()) != null) {                      
+    			protocol.analyze(input);
+    			out.println(protocol.getResponse());
+    			protocol.setResponse(null);
+    		}
+    		socket.close();
+    	} catch (IOException e) {
+    		e.printStackTrace();
+    	}
+    }
+	
+     /*
         try {
 
-            // Create character streams for the socket.
-            in = new BufferedReader(new InputStreamReader(
-                socket.getInputStream()));
-            out = new PrintWriter(socket.getOutputStream(), true);
-            listPrintWriter.insertHead(out);
+
          
             while (true) {
-            	System.out.println("entr�");
+            	System.out.println("entro");
             	if (listbikeID.getHead() == null){
-            		Jstring = in.readLine();
-            		if (Jstring!= null){
-            			System.out.println(Jstring);
-            			Integer r = (Integer) serverJson.decodeJRow(Jstring);
-            			Integer c = (Integer) serverJson.decodeJColumn(Jstring);
+            		String jsonString = in.readLine();
+            		if (jsonString!= null){
+            			System.out.println(jsonString);
+            			Integer r = (Integer) ServerJson.decodeJRow(jsonString);
+            			Integer c = (Integer) ServerJson.decodeJColumn(jsonString);
             			logic.setMatrixSize(r, c);
             			SArray = logic.generateMatrix();
-            			JAMain = serverJson.encodeJArray(SArray); //generate matrix
+            			JSONArray JAMain = ServerJson.encodeJArray(SArray); //generate matrix
             			System.out.println(JAMain); 
             			out.print(JAMain);
             			break;
@@ -67,8 +71,8 @@ public class Handler extends Thread {
                     return;
                 }else{
                 	String[] keyArray = new String[4];
-                	name = serverJson.decodeJSPlayer(input);
-                	String key = serverJson.decodeJSKey(input);
+                	name = ServerJson.decodeJSPlayer(input);
+                	String key = ServerJson.decodeJSKey(input);
                 	if (listbikeID.exist(name)){
                 		if (name.equals("bike1")){
                 			keyArray[0] = key;
@@ -95,7 +99,7 @@ public class Handler extends Thread {
                 	logic.modifyDirections(keyArray);
                 	logic.update();
                 	String[][] matrixShared = logic.generateMatrix();
-                	JAMain = serverJson.encodeJArray(matrixShared);
+                	JSONArray JAMain = ServerJson.encodeJArray(matrixShared);
                 	Node<PrintWriter> temp = listPrintWriter.getHead();
                 	for (int i = 0;i<listPrintWriter.getLenght();i++){
                 		PrintWriter writer = temp.getData();
@@ -113,47 +117,8 @@ public class Handler extends Thread {
             } catch (IOException e) {
             }
         }
-    }
-
-	public ServerJson getServerJson() {
-		return serverJson;
-	}
-
-	public void setServerJson(ServerJson serverJson) {
-		this.serverJson = serverJson;
-	}
-
-	public JSONArray getJAMain() {
-		return JAMain;
-	}
-
-	public void setJAMain(JSONArray jAMain) {
-		JAMain = jAMain;
-	}
-
-	public List<PrintWriter> getListPrintWriter() {
-		return listPrintWriter;
-	}
-
-	public void setListPrintWriter(List<PrintWriter> listPrintWriter) {
-		this.listPrintWriter = listPrintWriter;
-	}
-
-	public List<String> getListbikeID() {
-		return listbikeID;
-	}
-
-	public void setListbikeID(List<String> listbikeID) {
-		this.listbikeID = listbikeID;
-	}
-
-	public String getJstring() {
-		return Jstring;
-	}
-
-	public void setJstring(String jstring) {
-		Jstring = jstring;
-	}
+        */
+    
 
 	public Socket getSocket() {
 		return socket;
@@ -179,12 +144,13 @@ public class Handler extends Thread {
 		this.out = out;
 	}
 
-	public Logic getLogic() {
-		return logic;
+
+	public Protocol getProtocol() {
+		return protocol;
 	}
 
-	public void setLogic(Logic logic) {
-		this.logic = logic;
+	public void setProtocol(Protocol protocol) {
+		this.protocol = protocol;
 	}
-    
+	    
 }

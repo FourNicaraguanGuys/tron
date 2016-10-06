@@ -12,6 +12,7 @@ public class LightBike extends Element {
 	
 	private Boolean active;
 	private int id;
+	private int userId;
 	private QuadrupleList<Element> matrix;
 	
 	private int speed;
@@ -20,32 +21,36 @@ public class LightBike extends Element {
 	private List<LightTrail> trailList;
 	
 	private Queue<Element> itemQueue;
+	private Queue<HyperSpeed> hyperSpeedQueue;
 	private Stack<Element> shieldStack;
 
 	public LightBike(QuadrupleNode<Element> matrixPosition, int id, QuadrupleList<Element> matrix) {
 		super(BIKE,matrixPosition);
 		this.id = id;
+		this.userId = DEFAULT_USER_ID;
 		this.active = true;
 		this.setMatrix(matrix);
 		this.speed = RandomGenerator.nextInt(MINIMUM_SPEED,MAXIMUM_SPEED);
 		this.fuel = RandomGenerator.nextFloat(MINIMUM_FUEL,MAXIMUM_FUEL);
 		this.direction = getRandomDirection();
 		this.itemQueue = new Queue<Element>();
+		this.hyperSpeedQueue = new Queue<HyperSpeed>();
 		this.shieldStack = new Stack<Element>();
 		createTrail(INITIAL_TRAIL_LENGHT);
 	}
 	
-	public LightBike(QuadrupleNode<Element> matrixPosition, int id, 
-			QuadrupleList<Element> matrix, int speed, float fuel,
-			String direction, int trailLenght) {
+	public LightBike(QuadrupleNode<Element> matrixPosition, int id, QuadrupleList<Element> matrix, int speed,
+			float fuel, String direction, int trailLenght) {
 		super(BIKE,matrixPosition);
 		this.id = id;
+		this.userId = DEFAULT_USER_ID;
 		this.active = true;
 		this.setMatrix(matrix);
 		this.speed = speed;
 		this.fuel = fuel;
 		this.direction = direction;
 		this.itemQueue = new Queue<Element>();
+		this.hyperSpeedQueue = new Queue<HyperSpeed>();
 		this.shieldStack = new Stack<Element>();
 		createTrail(trailLenght);
 	}
@@ -62,22 +67,69 @@ public class LightBike extends Element {
 	}
 	 
 	public void move() {
+		if(userId == DEFAULT_USER_ID) {
+			analizeDirection();
+		}
+		
 		for(int counter = 0; counter < speed; counter++) {
-			if(outOfBounds() || bikeCollision() || mineInPath() || unableToMove() || outOfFuel() ) {
+			if(outOfBounds() || bikeCollision() || mineInPath() || unableToMove() || outOfFuel()) {
 				destroyBike();
-				//spreadItems();
-				//spreadPowerUps();
+				spreadItems();
+				spreadShields();
+				spreadHyperSpeed();
 				break;
 
 			}
 			else {
 				collectUpgradesInPath();
 				moveBikeAndTrail();
+				consumeHyperSpeed();
 				consumeFuel(); 
 			}
 		}	
 	}
 	
+	private void analizeDirection() {
+		if(matrixPosition.getNode(direction) == null || 
+				matrixPosition.getNode(direction).getData() != null) {
+			moveRight();
+		}
+		else if(matrixPosition.getNode(direction) == null || 
+				matrixPosition.getNode(direction).getData() != null) {
+				moveLeft();
+				moveLeft();
+		}
+	}
+
+	private void spreadHyperSpeed() {
+		while(hyperSpeedQueue != null) {
+			hyperSpeedQueue.peek().resetMovementsLeft();
+			hyperSpeedQueue.dequeue().setMatrixPosition(randomMatrixPosition());
+		}
+	}
+
+	private void consumeHyperSpeed() {
+		if(hyperSpeedQueue != null) {
+			hyperSpeedQueue.peek().decreaseMovementsLeft();
+			if(hyperSpeedQueue.peek().getMovementsLeft() >= 0) {
+				speed -= hyperSpeedQueue.peek().getSpeedBoost();
+				hyperSpeedQueue.dequeue();
+			}
+		}
+	}
+
+	private void spreadShields() {
+		while(shieldStack != null) {
+			shieldStack.pop().setMatrixPosition(randomMatrixPosition());
+		}
+	}
+
+	private void spreadItems() {
+		while(itemQueue != null) {
+			itemQueue.dequeue().setMatrixPosition(randomMatrixPosition());
+		}
+	}
+
 	public void modifyDirection(String direction) {
 		 if(direction.equals(RIGHT)) {
 			 moveRight(); 
@@ -132,12 +184,12 @@ public class LightBike extends Element {
 		boolean result = false;
 		if (getNextMatrixPositionData() != null && 
 				getNextMatrixPositionData().getType() == MINE) {
-			getNextMatrixPositionData().setMatrixPosition(null);
 			if(shieldStack.peek() != null) {
 				shieldStack.pop();
 			} else {
 				result = true;
 			}
+			getNextMatrixPositionData().setMatrixPosition(null);
 		}
 		return result;
 	}
@@ -147,8 +199,13 @@ public class LightBike extends Element {
 	}
 	
 	private boolean bikeCollision() {
-		return getNextMatrixPositionData() != null &&
-				getNextMatrixPositionData().getType() == BIKE;
+		boolean collision = false;
+		if(getNextMatrixPositionData() != null &&
+				getNextMatrixPositionData().getType() == BIKE) {
+			LightBike.class.cast(getNextMatrixPosition().getData()).destroyBike();
+			collision = true;
+		}
+		return collision;
 	}
 	
 	private void collectUpgradesInPath() {
@@ -165,7 +222,8 @@ public class LightBike extends Element {
 		}
 		else if(getNextMatrixPositionData() != null &&
 				getNextMatrixPositionData().getType() == HYPER_SPEED) {
-			//powerUpStack.push(getNextMatrixPositionData());
+			hyperSpeedQueue.enqueue(HyperSpeed.class.cast(getNextMatrixPositionData().getType()));
+			speed += hyperSpeedQueue.peek().getSpeedBoost();
 			getNextMatrixPositionData().setMatrixPosition(null);
 		}	
 	}
@@ -262,6 +320,19 @@ public class LightBike extends Element {
 		return orientation;
 	}
 	
+	private QuadrupleNode<Element> randomMatrixPosition() {
+		QuadrupleNode<Element> randomMatrixPosition = null;
+		while(randomMatrixPosition == null) {
+			int row = RandomGenerator.nextInt(1, matrix.getRows());
+			int column = RandomGenerator.nextInt(1, matrix.getColumns());
+			QuadrupleNode<Element> tmpMatrixPosition = matrix.getNode(row, column);
+			if(tmpMatrixPosition.getData() == null) {
+				randomMatrixPosition = tmpMatrixPosition;
+				}
+			}
+		return randomMatrixPosition;
+	}
+	
 	public Boolean isActive() {
 		return active;
 	}
@@ -294,6 +365,14 @@ public class LightBike extends Element {
 		this.id = id;
 	}
 	
+	public int getUserId() {
+		return userId;
+	}
+
+	public void setUserId(int userId) {
+		this.userId = userId;
+	}
+
 	public int getSpeed() {
 		return speed;
 	}
@@ -324,6 +403,14 @@ public class LightBike extends Element {
 
 	public void setMatrix(QuadrupleList<Element> matrix) {
 		this.matrix = matrix;
+	}
+
+	public Queue<HyperSpeed> getHyperSpeedQueue() {
+		return hyperSpeedQueue;
+	}
+
+	public void setHyperSpeedQueue(Queue<HyperSpeed> hyperSpeedQueue) {
+		this.hyperSpeedQueue = hyperSpeedQueue;
 	}
 	 	
 }

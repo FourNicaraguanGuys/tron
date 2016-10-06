@@ -1,4 +1,4 @@
-package tron.logic;
+package tron.server;
 
 public interface Constants {
 	
@@ -28,5 +28,13 @@ public interface Constants {
 	
 	public static final String SHIELD = "shield";
 	public static final String HYPER_SPEED = "hyper speed";
-
+	
+	public static final int MINIMUM_SPEED_BOOST = 1;
+	public static final int MAXIMUM_SPEED_BOOST = 3;
+	
+	public static final int DEFAULT_HYPER_SPEED_MOVEMENTS = 5;
+	public static final int DEFAULT_NUMBER_OF_BIKES = 4; 
+	public static final int DEFAULT_USER_ID = -1;
+	
+	public static final int PORT_NUMBER = 9001;
 }

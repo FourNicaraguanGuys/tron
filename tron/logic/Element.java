@@ -1,6 +1,7 @@
 package tron.logic;
 
 import linkedlist.quadruple.QuadrupleNode;
+import tron.server.Constants;
 
 public class Element implements Constants {
 	

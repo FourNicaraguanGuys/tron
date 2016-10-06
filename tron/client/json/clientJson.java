@@ -1,4 +1,4 @@
-package tron.client.Json;
+package tron.client.json;
 
 import org.json.simple.parser.*;
 import org.json.simple.JSONArray;
@@ -31,6 +31,7 @@ public class clientJson {
 	      
 	  }
 	
+	@SuppressWarnings("unchecked")
 	public static JSONArray encodeJSON(int[][] dmatrix){
 	    JSONArray jMatrix = new JSONArray();
 	    for (int i = 0; i < dmatrix.length; i++){
