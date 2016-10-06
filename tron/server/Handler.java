@@ -51,6 +51,7 @@ public class Handler extends Thread {
             			JAMain = serverJson.createJson(r, c); //generate matrix
             			System.out.println(JAMain); 
             			out.print(JAMain);
+            			out.print("hola wey");
             			break;
             		}
             	}else{

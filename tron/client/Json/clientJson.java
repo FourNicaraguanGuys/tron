@@ -2,6 +2,7 @@ package tron.client.Json;
 
 import org.json.simple.parser.*;
 import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 public class clientJson {
 	
@@ -43,5 +44,51 @@ public class clientJson {
 	    return jMatrix;
 	  }
 	
+	public int decodeIdPlayer(String JString){
+		JSONParser parser = new JSONParser();
+	    int state = -1;    
+	    try {  
+	         
+	       Object obj = parser.parse(JString);       
+	       JSONObject jsonObject = (JSONObject) obj;  
+	         
+	       state = (int)(long) jsonObject.get("userId");
+	         
+	       } catch (ParseException e) {  
+	         e.printStackTrace();  
+	        }      
+	    return state;
+	}
+	public String decodeJsStatus(String JString){
+		JSONParser parser = new JSONParser();
+	    String state = null;    
+	    try {  
+	         
+	       Object obj = parser.parse(JString);       
+	       JSONObject jsonObject = (JSONObject) obj;  
+	         
+	       state = (String) jsonObject.get("status");
+	         
+	       } catch (ParseException e) {  
+	         e.printStackTrace();  
+	        }      
+	    return state;
+	}
+	
+	public String decodeJsMatrix(String JString){
+		JSONParser parser = new JSONParser();
+	    String state = null;    
+	    try {  
+	         
+	       Object obj = parser.parse(JString);       
+	       JSONObject jsonObject = (JSONObject) obj;  
+	         
+	       state = (String) jsonObject.get("matrix");
+	         
+	       } catch (ParseException e) {  
+	         e.printStackTrace();  
+	        }      
+	    return state;
+	}
 	
 }

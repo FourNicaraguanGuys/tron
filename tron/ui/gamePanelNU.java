@@ -1,31 +1,32 @@
 package tron.ui;
 
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.EventQueue;
-
+import java.awt.event.KeyListener;
+import java.util.Random;
+import java.awt.event.KeyEvent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.border.LineBorder;
 
-import linkedlist.simple.*;
 import linkedlist.simple.client.LsNode;
 import linkedlist.simple.client.listaSimplePrueba;
 
 
 
-public class gamePanelNU{
-	
+public class gamePanelNU implements KeyListener{
 	private JFrame frame;
 	//***************************************//
 	private String[][] array;
 	//***************************************//
 	private listaSimplePrueba lista = new listaSimplePrueba();
-	private listaSimplePrueba listaR = new listaSimplePrueba();
+	private Random rand = new Random();
+	private clientLogic logic;
 	//***************************************//
 	private int columns;
 	private int rows;
-	private int printer = 0;
-	private int printer2 = 0;
+	private int pointer = 0;
+	private int pointer2 = 0;
+	private int pointer4 = 0;
 	private int xpos = 0;
 	private int ypos = 0;
 	//***************************************//
@@ -35,67 +36,79 @@ public class gamePanelNU{
 		this.array = array;
 		this.columns = Integer.parseInt(columns);
 		this.rows = Integer.parseInt(rows);
-		initialize();
-		imp();
+		createJpanels();
+		printJpanels();
 		frame.setVisible(true);
 	}
 	
-
-
-	
-	private void initialize() {
-		int math = 300/rows;
-		int ro = (int) (math*(rows-0.85));
-		int printer4 = 0;
-		int col = (int) (40*(columns-0.75));
-		
+	public void createJpanels(){
 		frame = new JFrame();
-		frame.setBounds(100, 100, 481, 336);
+		frame.addKeyListener(this);
+		frame.setBounds(100, 100, 928, 676);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setLayout(null);
-
-		while(printer != columns){
-			printer = printer + 1;
-			JPanel panel = new JPanel();
-			panel.setBackground(Color.MAGENTA);
-			panel.setBounds(46, 90+ypos, ro, 10);
-			ypos = ypos + 40;
-			lista.addToTail(panel);
-			
-		}
-
-		while (printer4 != rows){
-			printer4 = printer4 + 1;
-			JPanel panelC = new JPanel();
-			panelC.setBackground(Color.MAGENTA);
-			panelC.setBounds(46+xpos, 90, 10, col);
-			xpos = xpos + math;
-			listaR.addToTail(panelC);
-
-		}
+		frame.getContentPane().setLayout(null);	
 		
-
-		
+		while(pointer4 != rows){
+			while(pointer != columns){
+				JPanel panel = new JPanel();
+				panel.setBorder(new LineBorder(new Color(0, 0, 0), 2));
+				panel.setBackground(Color.WHITE);
+				panel.setBounds(0+xpos, 0+ypos, 25, 25);
+				pointer = pointer + 1;
+				xpos = xpos +25;
+				lista.addToTail(panel);
+			}
+			xpos = 0;
+			pointer = 0;
+			ypos = ypos+25;
+			pointer4 = pointer4 +1;
+		}
+	}
+	public void printJpanels(){
+		LsNode temp = lista.getHead();
+		while (pointer2 != lista.getL()+1){
+			frame.getContentPane().add(temp.getinfo());
+			temp = temp.next;
+			pointer2 = pointer2 + 1;
+		}
+	
 	}
 	
-	public void imp(){
-		LsNode temp = lista.getHead();
-		while (printer2 != lista.getL()+1){
-			frame.getContentPane().add(temp.getinfo());
-			temp = temp.next;
-			printer2 = printer2 + 1;
-		}
+	@Override
+	public void keyPressed(KeyEvent arg0) {
+		// TODO Auto-generated method stub
+		int key = arg0.getKeyCode();
+
+		  if (key == KeyEvent.VK_LEFT) {
+
+			  System.out.println("Presionó Izquierda!");
+		  }
+		  if (key == KeyEvent.VK_RIGHT) {
+			  
+			  System.out.println("Presionó Derecha!");
+		  }
+		  if (key == KeyEvent.VK_UP){
+			  
+			  System.out.println("Presionó Arriba!" );
+		  }
+		  if (key == KeyEvent.VK_DOWN){
+			  
+			  System.out.println("Presionó Abajo!");
+		  }
+
 		
-		temp = listaR.getHead();
-		int printer3 =  0;
-		while (printer3 != listaR.getL()+1){
-			frame.getContentPane().add(temp.getinfo());
-			temp = temp.next;
-			printer3 = printer3 + 1;
-		}
 	}
 
+	@Override
+	public void keyReleased(KeyEvent arg0) {
+		// TODO Auto-generated method stub
+		System.out.println("Soltó una tecla");
+	}
 
+	@Override
+	public void keyTyped(KeyEvent arg0) {
+		// TODO Auto-generated method stub
+	}
 }
 
 

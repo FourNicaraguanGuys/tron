@@ -1,7 +1,5 @@
 package tron.ui;
 
-import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -17,7 +15,7 @@ public class clientNU {
 	private JTextField nrows;
 	private String Rows;
 	private String Columns;
-	private String ip = "localhost";
+	private String ip = "192.168.1.60";
 
 	public clientNU() {
 		initialize();
@@ -80,6 +78,8 @@ public class clientNU {
 		btnSave.setBounds(267, 263, 89, 23);
 		frame.getContentPane().add(btnSave);
 	}
+	
+	
 	
 
 }
