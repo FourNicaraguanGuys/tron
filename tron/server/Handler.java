@@ -26,99 +26,21 @@ public class Handler extends Thread {
              
     		String input;         
     		protocol.init(this);     
-    		System.out.println("New Connection");
     		out.println(protocol.getResponse());
     		
-    		while ((input = in.readLine()) != null) {                      
+    		while ((input = in.readLine()) != null) { 
+    			System.out.println(input);
     			protocol.analyze(input);
+    			while(protocol.getResponse() == null) {}
+    			System.out.println(protocol.getResponse());
     			out.println(protocol.getResponse());
     			protocol.setResponse(null);
     		}
     		socket.close();
-    	} catch (IOException e) {
-    		e.printStackTrace();
-    	}
+        } catch (IOException e ) {
+            e.printStackTrace();
+         }
     }
-	
-     /*
-        try {
-
-
-         
-            while (true) {
-            	System.out.println("entro");
-            	if (listbikeID.getHead() == null){
-            		String jsonString = in.readLine();
-            		if (jsonString!= null){
-            			System.out.println(jsonString);
-            			Integer r = (Integer) ServerJson.decodeJRow(jsonString);
-            			Integer c = (Integer) ServerJson.decodeJColumn(jsonString);
-            			logic.setMatrixSize(r, c);
-            			SArray = logic.generateMatrix();
-            			JSONArray JAMain = ServerJson.encodeJArray(SArray); //generate matrix
-            			System.out.println(JAMain); 
-            			out.print(JAMain);
-            			break;
-            		}
-            	}else{
-            		break; 
-            	}
-            }
-           
-            while (true) {
-                String input = in.readLine();
-                if (input == null) {
-                    return;
-                }else{
-                	String[] keyArray = new String[4];
-                	name = ServerJson.decodeJSPlayer(input);
-                	String key = ServerJson.decodeJSKey(input);
-                	if (listbikeID.exist(name)){
-                		if (name.equals("bike1")){
-                			keyArray[0] = key;
-                		}else if(name.equals("bike2")){
-                			keyArray[1] = key;
-                		}else if(name.equals("bike3")){
-                			keyArray[2] = key;
-                		}else if (name.equals("bike4")){
-                			keyArray[3] = key;
-                		}
-                	}else{
-                		listbikeID.insertTail(name);
-                		if (name.equals("bike1")){
-                			keyArray[0] = key;
-                		}else if(name.equals("bike2")){
-                			keyArray[1] = key;
-                		}else if(name.equals("bike3")){
-                			keyArray[2] = key;
-                		}else if (name.equals("bike4")){
-                			keyArray[3] = key;
-                		}
-                	}
-                	
-                	logic.modifyDirections(keyArray);
-                	logic.update();
-                	String[][] matrixShared = logic.generateMatrix();
-                	JSONArray JAMain = ServerJson.encodeJArray(matrixShared);
-                	Node<PrintWriter> temp = listPrintWriter.getHead();
-                	for (int i = 0;i<listPrintWriter.getLenght();i++){
-                		PrintWriter writer = temp.getData();
-                		writer.println(JAMain);
-                		temp = temp.getNextNode();
-                	}
-                	
-                }
-            }
-        } catch (IOException e) {
-            System.out.println(e);
-        } finally {
-            try {
-                socket.close();
-            } catch (IOException e) {
-            }
-        }
-        */
-    
 
 	public Socket getSocket() {
 		return socket;

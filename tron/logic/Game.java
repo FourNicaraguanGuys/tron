@@ -65,10 +65,10 @@ public class Game implements Constants {
 		return randomMatrixPosition;
 	}
 	
-	public void modifyDirection(int bikeId, String direction) {
+	public void modifyDirection(int userId, String direction) {
 		Node<LightBike> bikeNode = bikesList.getHead();
 		while(bikeNode != null) {
-			if(bikeNode.getData().getId() == bikeId) {
+			if(bikeNode.getData().getUserId() == userId) {
 				bikeNode.getData().setDirection(direction);
 				playersUpdated++;
 				break;
@@ -173,14 +173,14 @@ public class Game implements Constants {
 	public String[][] generateMatrix() {
 		Object[][] elementMatrix = matrix.generateMatrix();
 		String[][] stringMatrix = new String[matrix.getRows()][matrix.getColumns()];
-		for(int row = 0; row < matrix.getRows()-1; row++) {
-			for(int column = 0; column < matrix.getColumns()-1; column++) {
+		for(int row = 0; row < matrix.getRows(); row++) {
+			for(int column = 0; column < matrix.getColumns(); column++) {
 				Element currentElement = Element.class.cast(elementMatrix[row][column]);
 				if(currentElement != null) {
-					if(currentElement.getType() == BIKE) {
+					if(currentElement.getType().equals(BIKE)) {
 						stringMatrix[row][column] = currentElement.getType() + 
 								((LightBike)currentElement).getId();
-					} else if (currentElement.getType() == TRAIL) {
+					} else if (currentElement.getType().equals(TRAIL)) {
 						stringMatrix[row][column] = currentElement.getType() + 
 								((LightTrail)currentElement).getId();
 					} else {

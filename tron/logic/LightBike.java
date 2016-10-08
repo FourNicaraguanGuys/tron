@@ -43,7 +43,7 @@ public class LightBike extends Element {
 			float fuel, String direction, int trailLenght) {
 		super(BIKE,matrixPosition);
 		this.id = id;
-		this.userId = DEFAULT_USER_ID;
+		this.userId = DEFAULT_USER_ID + 1;
 		this.active = true;
 		this.setMatrix(matrix);
 		this.speed = speed;
@@ -72,19 +72,23 @@ public class LightBike extends Element {
 		}
 		
 		for(int counter = 0; counter < speed; counter++) {
-			if(outOfBounds() || bikeCollision() || mineInPath() || unableToMove() || outOfFuel()) {
-				destroyBike();
-				spreadItems();
-				spreadShields();
-				spreadHyperSpeed();
-				break;
-
+			if(isActive()) {
+				if(outOfBounds() || bikeCollision() || mineInPath() || unableToMove() || outOfFuel()) {
+					destroyBike();
+					spreadItems();
+					spreadShields();
+					spreadHyperSpeed();
+					break;
+				}
+				else {
+					collectUpgradesInPath();
+					moveBikeAndTrail();
+					consumeHyperSpeed();
+					consumeFuel(); 
+				}
 			}
 			else {
-				collectUpgradesInPath();
-				moveBikeAndTrail();
-				consumeHyperSpeed();
-				consumeFuel(); 
+				break;
 			}
 		}	
 	}
@@ -101,31 +105,31 @@ public class LightBike extends Element {
 		}
 	}
 
-	private void spreadHyperSpeed() {
-		while(hyperSpeedQueue != null) {
+	public void spreadHyperSpeed() {
+		while(hyperSpeedQueue.peek() != null) {
 			hyperSpeedQueue.peek().resetMovementsLeft();
 			hyperSpeedQueue.dequeue().setMatrixPosition(randomMatrixPosition());
 		}
 	}
 
 	private void consumeHyperSpeed() {
-		if(hyperSpeedQueue != null) {
+		if(hyperSpeedQueue.peek() != null) {
 			hyperSpeedQueue.peek().decreaseMovementsLeft();
-			if(hyperSpeedQueue.peek().getMovementsLeft() >= 0) {
+			if(hyperSpeedQueue.peek().getMovementsLeft() <= 0) {
 				speed -= hyperSpeedQueue.peek().getSpeedBoost();
 				hyperSpeedQueue.dequeue();
 			}
 		}
 	}
 
-	private void spreadShields() {
-		while(shieldStack != null) {
+	public void spreadShields() {
+		while(shieldStack.peek() != null) {
 			shieldStack.pop().setMatrixPosition(randomMatrixPosition());
 		}
 	}
 
-	private void spreadItems() {
-		while(itemQueue != null) {
+	public void spreadItems() {
+		while(itemQueue.peek() != null) {
 			itemQueue.dequeue().setMatrixPosition(randomMatrixPosition());
 		}
 	}
@@ -170,7 +174,7 @@ public class LightBike extends Element {
 	private boolean unableToMove() {	
 		Boolean unableToMove = false;
 		if(getNextMatrixPositionData() != null &&
-				getNextMatrixPositionData().getType() == TRAIL) {
+				getNextMatrixPositionData().getType().equals(TRAIL)) {
 			if(shieldStack.peek() != null) {
 				shieldStack.pop();
 			} else {
@@ -183,7 +187,7 @@ public class LightBike extends Element {
 	private boolean mineInPath() {
 		boolean result = false;
 		if (getNextMatrixPositionData() != null && 
-				getNextMatrixPositionData().getType() == MINE) {
+				getNextMatrixPositionData().getType().equals(MINE)) {
 			if(shieldStack.peek() != null) {
 				shieldStack.pop();
 			} else {
@@ -201,7 +205,7 @@ public class LightBike extends Element {
 	private boolean bikeCollision() {
 		boolean collision = false;
 		if(getNextMatrixPositionData() != null &&
-				getNextMatrixPositionData().getType() == BIKE) {
+				getNextMatrixPositionData().getType().equals(BIKE)) {
 			LightBike.class.cast(getNextMatrixPosition().getData()).destroyBike();
 			collision = true;
 		}
@@ -210,19 +214,19 @@ public class LightBike extends Element {
 	
 	private void collectUpgradesInPath() {
 		if(getNextMatrixPositionData() != null &&
-				getNextMatrixPositionData().getType() == FUEL_CELL) {
+				getNextMatrixPositionData().getType().equals(FUEL_CELL)) {
 			itemQueue.enqueue(getNextMatrixPositionData());
 			getNextMatrixPositionData().setMatrixPosition(null);
 			increaseFuel();
 		}
 		else if(getNextMatrixPositionData() != null &&
-				getNextMatrixPositionData().getType() == SHIELD) {
+				getNextMatrixPositionData().getType().equals(SHIELD)) {
 			shieldStack.push(getNextMatrixPositionData());
 			getNextMatrixPositionData().setMatrixPosition(null);
 		}
 		else if(getNextMatrixPositionData() != null &&
-				getNextMatrixPositionData().getType() == HYPER_SPEED) {
-			hyperSpeedQueue.enqueue(HyperSpeed.class.cast(getNextMatrixPositionData().getType()));
+				getNextMatrixPositionData().getType().equals(HYPER_SPEED)) {
+			hyperSpeedQueue.enqueue(HyperSpeed.class.cast(getNextMatrixPositionData()));
 			speed += hyperSpeedQueue.peek().getSpeedBoost();
 			getNextMatrixPositionData().setMatrixPosition(null);
 		}	
@@ -235,7 +239,7 @@ public class LightBike extends Element {
 	private void moveBikeAndTrail() {
 		
 		if(getNextMatrixPositionData() != null &&
-				getNextMatrixPositionData().getType() == TRAIL_UPGRADE){
+				getNextMatrixPositionData().getType().equals(TRAIL_UPGRADE)){
 			
 			itemQueue.enqueue(getNextMatrixPositionData());
 			getNextMatrixPositionData().setMatrixPosition(null);
@@ -271,7 +275,7 @@ public class LightBike extends Element {
 	}
 	 
 	public void destroyBike() {
-		active = false;
+		setActive(false);
 		setMatrixPosition(null);
 		Node<LightTrail> nodePointer = trailList.getHead();
 		while(nodePointer != null) {
@@ -412,6 +416,13 @@ public class LightBike extends Element {
 	public void setHyperSpeedQueue(Queue<HyperSpeed> hyperSpeedQueue) {
 		this.hyperSpeedQueue = hyperSpeedQueue;
 	}
+
+	public Stack<Element> getShieldStack() {
+		return shieldStack;
+	}
+
+	public void setShieldStack(Stack<Element> shieldStack) {
+		this.shieldStack = shieldStack;
+	}
 	 	
 }
-

@@ -1,13 +1,11 @@
 package tron.data;
 
-import tron.logic.Game;
 import tron.server.Handler;
 
 public class User {
 	
 	private int id;
 	private Handler handler;
-	private Game game; //<<<<<<<<<<<<<<<<<<<<<<revisar si necesario
 	
 	public User(int id, Handler handler) {
 		setId(id);
@@ -28,14 +26,6 @@ public class User {
 
 	public void setHandler(Handler handler) {
 		this.handler = handler;
-	}
-
-	public Game getGame() {
-		return game;
-	}
-
-	public void setGame(Game game) {
-		this.game = game;
 	}
 
 }

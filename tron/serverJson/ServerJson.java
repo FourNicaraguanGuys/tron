@@ -43,8 +43,7 @@ public class ServerJson {
 		try {         
 			Object obj = parser.parse(jsonString);  
 	         
-			JSONObject jsonObject = (JSONObject) obj;  
-	        System.out.println(jsonString);
+			JSONObject jsonObject = (JSONObject) obj;
 	        /*
 			String userIdString = (String)jsonObject.get("userId");  
 			userId = Integer.parseInt(userIdString);
@@ -160,7 +159,7 @@ public class ServerJson {
 		
 		JSONObject matrixStatus = new JSONObject();
 		matrixStatus.put("status", "inGame");
-		matrixStatus.put("matrix", matrixStatus);
+		matrixStatus.put("matrix", jMatrix);
 		
 		return matrixStatus;
 	}

@@ -123,21 +123,6 @@ public class QuadrupleList<T> {
 				matrixArray[rowIndex][columnIndex] = getNode(rowIndex+1,columnIndex+1).getData();
 			}
 		}
-		/*
-		while(pointer != null) {
-			if(pointer.getEastNode() != null) {
-				matrixArray[row-1][column-1] = getNode(row,column).getData();
-				column++;
-				pointer = pointer.getEastNode();
-			}
-			else {
-				matrixArray[row-1][column-1] = getNode(row,column).getData();
-				column = 1;
-				row++;
-				pointer = getNode(row,column);
-			}
-		}
-		*/
 		return matrixArray;
 	}
 	

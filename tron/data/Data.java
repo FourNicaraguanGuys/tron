@@ -8,10 +8,8 @@ import tron.server.Handler;
 public class Data implements DataAccess {
 	
 	private static int userIdCounter;
-	//private static int gameIdCounter;
 	private List<User> userList;
 	private Game game;
-	//private List<Logic> gameList;
 	
 	public Data(){
 		setUserList(new List<User>());
@@ -71,41 +69,8 @@ public class Data implements DataAccess {
 		return user;
 	}
 	
-
-	
-
-	
-
-	
 	public int generateUserId() {
 		return userIdCounter++;
-	}
-	
-	
-	
-	public void setMatrixSize(int rowLenght, int columnLenght) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void generateBikes() {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	public void modifyDirections(String[] directionsArray) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void update() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public String[][] generateMatrix() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	public List<User> getUserList() {

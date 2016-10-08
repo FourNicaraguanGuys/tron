@@ -48,20 +48,8 @@ public class Protocol {
 		else if(action.equals("updateDirection")) {
 			String direction = ServerJson.decodeDirection(jsonString);
 			dataAccess.updateDirection(userId, direction);
-			while(response == null) {}			
 		}
-		/*
-		else if(action.equals("endConnection")) {
-    		dataAccess.endUserConnection(userId);
-    		response = Json
-    		try {
-				socket.close();
-			} catch (IOException e) {e.printStackTrace();}
-    		//Crea un objeto json con la respuesta
-    		JSONObject jsonEnv = new JSONObject();
-    		jsonEnv.put("actividad", "cerrar");
-    		return jsonEnv;
-    	}*/
+
 	}
 	
 	public void updateGameInfo() {
@@ -70,7 +58,6 @@ public class Protocol {
 	
 	public void updateGameInfo(String[][] matrix) {
 		response = ServerJson.encodeJArray(matrix);
-		System.out.println(response);
 	}
 
 	public DataAccess getDataAccess() {
