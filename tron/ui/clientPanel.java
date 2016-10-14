@@ -14,7 +14,6 @@ import java.awt.event.ActionEvent;
 public class clientPanel {
 
 	private JFrame frame;
-	private String ip = "";
 
 	/**
 	 * Launch the application.
@@ -67,6 +66,7 @@ public class clientPanel {
 		JButton btnJG = new JButton("Join Game");
 		btnJG.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				
 				frame.setVisible(false);
 				
 				

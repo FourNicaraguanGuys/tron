@@ -1,36 +1,42 @@
 package tron.client.Json;
 
 import org.json.simple.parser.*;
+
+import linkedlist.simple.List;
+
+import java.util.ArrayList;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 public class clientJson {
 	
-	public String[][] readJSON(String jArray) throws ParseException {
-	    JSONParser parser = new JSONParser();
-	    String[][] dmatrix = null;
-	    try{
-	      Object ob = parser.parse(jArray);
-	      JSONArray jsonArray = (JSONArray) ob;
-	      JSONArray rowArray =  (JSONArray) jsonArray.get(0);
-	      String[][] matrix = new String[jsonArray.size()][rowArray.size()];
+	public String[][] decodeBlocks(String serverInput) {
+
+	      JSONParser parser = new JSONParser();
+	      String[][] stringElements = null;
 	      
-	      for (int iRow = 0; iRow < jsonArray.size(); iRow++){
-	        rowArray = (JSONArray) jsonArray.get(iRow);
-	        String[] dataArray = new String[rowArray.size()];
-	        for (int jColumn = 0; jColumn < rowArray.size(); jColumn++){
-	          dataArray[jColumn] = (String) rowArray.get(jColumn);
-	        }
-	        matrix[iRow] = dataArray;
-	      }
-	      dmatrix = matrix;
-	      
-	     } catch (ParseException e) {  
-	           e.printStackTrace();  
-	       }    
-	    return dmatrix;
-	      
-	  }
+	      try {        
+	         Object obj = parser.parse(serverInput);       
+	         JSONObject jsonObject = (JSONObject) obj;     
+	         JSONArray jsonElementsArray = (JSONArray) jsonObject.get("matrix");
+	         String[][] elementStringArray = new String[jsonElementsArray.size()][((JSONArray) (jsonElementsArray.get(0))).size()];
+	         
+	         for(int row = 0; row < elementStringArray.length; row++){
+	            JSONArray jsonRowArray = (JSONArray) jsonElementsArray.get(row);   
+	            String[] columnArray = new String[jsonRowArray.size()];
+	            
+	            for (int column = 0; column < columnArray.length; column++) {
+	               columnArray[column] = (String)jsonRowArray.get(column);
+	            }
+	            elementStringArray[row] = columnArray;
+	         }
+	         stringElements = elementStringArray;
+	      } catch (ParseException e) {  
+	         e.printStackTrace();  
+	      }      
+	      return stringElements;
+	   }
 	
 	public static JSONArray encodeJSON(int[][] dmatrix){
 	    JSONArray jMatrix = new JSONArray();
@@ -74,21 +80,35 @@ public class clientJson {
 	        }      
 	    return state;
 	}
-	
-	public String decodeJsMatrix(String JString){
+	/**
+	public String[][] decodeJsMatrix(String JString){
 		JSONParser parser = new JSONParser();
-	    String state = null;    
+	    String state = null;
+	    String[][] matrix = null;
+	    
 	    try {  
 	         
 	       Object obj = parser.parse(JString);       
 	       JSONObject jsonObject = (JSONObject) obj;  
 	         
-	       state = (String) jsonObject.get("matrix");
+	       //state = (String) jsonObject.get("matrix");
+	       
+	       matrix = readJSON((JSONArray) jsonObject.get("matrix"));
 	         
 	       } catch (ParseException e) {  
 	         e.printStackTrace();  
 	        }      
-	    return state;
-	}
+	    return matrix;
+	}**/
 	
+	public void encodeJArray(String[][] dmatrix){
+		  for (int i = 0; i < dmatrix.length; i++){
+		   for (int j = 0; j < dmatrix[i].length; j++ ){
+		    String pinga = dmatrix[i][j];
+		    if(pinga.equals(null)) {
+		    	
+		    }
+		   }
+		  }
+	}
 }

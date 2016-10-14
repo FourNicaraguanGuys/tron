@@ -15,7 +15,7 @@ public class clientNU {
 	private JTextField nrows;
 	private String Rows;
 	private String Columns;
-	private String ip = "192.168.1.60";
+	private String ip = "192.168.43.44";
 
 	public clientNU() {
 		initialize();
@@ -55,9 +55,8 @@ public class clientNU {
 		JButton btnStart = new JButton("Start");
 		btnStart.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				clientLogic logic = new clientLogic(ip, Columns, Rows, true);
+				clientLogic logic = new clientLogic("192.168.43.44", Columns, Rows, true);
 				logic.start();
-				new gamePanelNU(logic.getMatrix(), Columns, Rows);
 				
 				frame.setVisible(false);
 			}

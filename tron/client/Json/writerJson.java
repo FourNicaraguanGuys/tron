@@ -6,6 +6,7 @@ public class writerJson {
     private int userId;
     private String gamaeId;
     private String action;
+    private String direction;
     
     public void dimensions (int userId ,String action, String columns, String rows){
     	this.userId = userId;
@@ -14,9 +15,10 @@ public class writerJson {
     	this.rows = rows;
     }
     
-    public void signals(int userId, String action){ //gameId
+    public void signals(int userId, String action, String direction){ //gameId
     	this.userId = userId;
     	this.action = action;
+    	this.direction = direction;
     }
     
 /**

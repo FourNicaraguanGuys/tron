@@ -25,11 +25,13 @@ public class clientLogic extends Thread{
 	Gson jsonConvertAction;
 	//****************************************//
 	private clientJson cj = new clientJson();
+	private gamePanelNU game;
 	//****************************************//
 	
 	
 	public clientLogic(String ip, String rows, String columns, boolean nGame){
 		this.host = ip;
+		game =new gamePanelNU();
 		try{
 			socketClient = new Socket(host, port);
 			dataIn = new BufferedReader(new InputStreamReader(socketClient.getInputStream()));
@@ -42,22 +44,43 @@ public class clientLogic extends Thread{
 				sendMatrix(intId, columns, rows);
 				String json = dataIn.readLine();
 				System.out.println(json);
-				//arrayMap = cj.readJSON(json);
+				arrayMap = cj.decodeBlocks(json);
 			}
 
 		}
 		catch(Exception e){
 			e.printStackTrace();
 		}
+		game.createJpanels(arrayMap);
+		game.setArray(arrayMap);
+		game.repaint();
 	}
 	
 
 	public void run(){
 		while(true){
 			try{
+				sendAction(intId, "updateDirection", "forward");
+				Thread.sleep(500);
 				String datos = dataIn.readLine();
-				System.out.println(datos);
-				//arrayMap = cj.readJSON(datos);
+				String status = cj.decodeJsStatus(datos);
+				
+				if (status.equals("inGame")) {
+				
+					arrayMap = cj.decodeBlocks(datos);
+				
+					game.setArray(arrayMap);
+					game.repaint();
+				
+					game.createJpanels(arrayMap);
+					game.getFrame().repaint();
+				
+					System.out.println(datos);
+				}	
+				else {
+					System.out.println(status);
+					break;
+				}
 			}
 			catch(Exception e){
 				e.printStackTrace();
@@ -72,14 +95,16 @@ public class clientLogic extends Thread{
 		matrix.dimensions(sId,"newGame", columns, rows);
 		jsonConvert = new Gson();
 		String jsonString = jsonConvert.toJson(matrix);
+		System.out.println(jsonString + " signal");
 		dataOut.println(jsonString);
 	}
 	
-	public void sendAction(int id, String event){
+	public void sendAction(int id, String event, String direction){
 		writerJson action = new writerJson();
-		action.signals(id, event);
+		action.signals(id, event, direction);
 		jsonConvertAction = new Gson();
 		String jsonStringAction = jsonConvertAction.toJson(action);
+		System.out.println(jsonStringAction);
 		dataOut.println(jsonStringAction);
 	}
 	
